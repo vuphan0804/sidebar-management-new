@@ -14,6 +14,7 @@ import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
 import TreeManagement from "./treeManagement/TreeManagement";
 import icons from "../../dataIcons/icons";
 import SidebarFormIcon from "./sidebarForm/SidebarFormIcon";
+import FormManagement from "./modal/FormManagement";
 
 const Tree = ({ data, fetchSidebars }) => {
   const [searchString, setSearchString] = useState("");
@@ -36,6 +37,9 @@ const Tree = ({ data, fetchSidebars }) => {
   const [rowInfoDelete, setRowInfoDelete] = useState([]);
   const [selectedNodeParent, setSelectedNodeParent] = useState([]);
   const [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]);
+  const [isOpenForm, setIsOpenForm] = useState(false);
+  const [rowInfoData, setRowInfoData] = useState([]);
+
   const inputEl = useRef();
   const updateInputEl = useRef();
   const inputChildEl = useRef();
@@ -56,11 +60,11 @@ const Tree = ({ data, fetchSidebars }) => {
   }, [treeData]);
 
   const handleOpenForm = () => {
-    setIsOpen(true);
+    setIsOpenForm(true);
   };
 
   const handleCloseForm = () => {
-    setIsOpen(false);
+    setIsOpenForm(false);
   };
 
   const handleOpenFormDelete = (rowInfo) => {
@@ -88,6 +92,13 @@ const Tree = ({ data, fetchSidebars }) => {
   const handleCloseFormIcon = () => {
     setIsOpenFormIcon(false);
   };
+
+  // const moveHandle = document.getElementsByClassName("rst__moveHandle");
+  // if (moveHandle[rowInfoData.treeIndex]) {
+  //   moveHandle[
+  //     rowInfoData.treeIndex
+  //   ].style.background = `#d9d9d9  url(/img/${rowInfoData.node.icon}) no-repeat center`;
+  // }
 
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
@@ -406,46 +417,21 @@ const Tree = ({ data, fetchSidebars }) => {
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
-              // console.log("rowInfo", rowInfo);
               const moveHandle =
                 document.getElementsByClassName("rst__moveHandle");
-
-              let path = rowInfo.path;
-
-              // if (moveHandle[rowInfo.treeIndex]) {
-              //   if (path.length <= icons.length) {
-              //     for (let i = 0; i <= path.length; i++) {
-              //       moveHandle[
-              //         rowInfo.treeIndex
-              //       ].style.background = `#d9d9d9  url(/img/${
-              //         icons[i - 1]
-              //       }) no-repeat center`;
-              //     }
-              //   } else {
-              //     moveHandle[
-              //       rowInfo.treeIndex
-              //     ].style.background = `#d9d9d9  url(/img/menu.png
-              //     ) no-repeat center`;
-              //   }
-              // }
-
               if (moveHandle[rowInfo.treeIndex]) {
                 moveHandle[
                   rowInfo.treeIndex
                 ].style.background = `#d9d9d9  url(/img/${rowInfo.node.icon}) no-repeat center`;
               }
-
               return {
-                // title: rowInfo.node.label,
-                // subtitle: rowInfo.node.subTitle,
-
                 buttons: [
                   <div className="text-sm">
                     <button
                       id="addChildEl"
                       className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Add Child"
-                      onClick={(event) => selectedAddNodeChild(rowInfo)}
+                      onClick={(event) => handleOpenForm(rowInfo)}
                     >
                       <i className="fa-solid fa-plus"></i>
                     </button>
@@ -454,13 +440,13 @@ const Tree = ({ data, fetchSidebars }) => {
                       id="updateEl"
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Update"
-                      onClick={(event) => setSelectedSidebar(rowInfo)}
+                      onClick={(event) => handleOpenForm(rowInfo)}
                     >
                       <i className="fa-regular fa-pen-to-square"></i>
                     </button>
 
                     <button
-                      id="updateIcon"
+                      id="updateIconEl"
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Update Icon"
                       onClick={(event) => handleOpenFormIcon(rowInfo)}
@@ -504,7 +490,6 @@ const Tree = ({ data, fetchSidebars }) => {
         isOpenFormDelete={isOpenFormDelete}
       />
       ,
-      <SidebarForm onCloseForm={handleCloseForm} isOpen={isOpen} />
       <SidebarFormIcon
         isOpenFormIcon={isOpenFormIcon}
         handleCloseFormIcon={handleCloseFormIcon}
@@ -512,6 +497,10 @@ const Tree = ({ data, fetchSidebars }) => {
         treeDataUpdateIcon={treeDataUpdateIcon}
         fetchSidebars={fetchSidebars}
         updateIcon={updateIcon}
+      />
+      <FormManagement
+        isOpenForm={isOpenForm}
+        handleCloseForm={handleCloseForm}
       />
     </div>
   );

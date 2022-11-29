@@ -15,7 +15,6 @@ const SidebarFormIcon = ({
   const [updateIconSelected, setUpdateIconSelected] = useState(
     selectedNodeUpdateIcon
   );
-  const iconRef = useRef();
 
   useEffect(() => {
     callbackUpdateIcon();
@@ -98,7 +97,6 @@ const SidebarFormIcon = ({
                       <button
                         className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-2 w-12 h-12 rounded-sm text-center mx-auto"
                         key={index}
-                        // ref={iconRef}
                         onClick={() => setSelectedIcon(icon)}
                       >
                         <img
