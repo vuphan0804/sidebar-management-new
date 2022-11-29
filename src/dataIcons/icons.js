@@ -1,0 +1,22 @@
+let icons = [
+  "menu.png",
+  "menu1.png",
+  "menu2.png",
+  "menu3.png",
+  "menu4.png",
+  "menu5.png",
+  "menu6.png",
+  "menu7.png",
+  "menu8.png",
+  "menu9.png",
+  "menu10.png",
+  "menu11.png",
+  "menu12.png",
+  "menu13.png",
+  "menu14.png",
+  "menu15.png",
+  "menu16.png",
+  "menu17.png",
+  "menu18.png",
+];
+export default icons;

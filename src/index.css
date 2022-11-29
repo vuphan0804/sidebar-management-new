@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .transition-primary {
+    @apply transition-all ease-linear duration-300;
+  }
+}
+
+.bg-sidebar {
+  background-color: rgb(249, 249, 249, 0.7);
+}

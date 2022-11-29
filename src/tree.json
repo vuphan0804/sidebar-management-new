@@ -1,0 +1,41 @@
+[
+    {
+      "id": "1",
+      "title": "Company",
+      "subtitle": "zzz",
+      "isDirectory": true,
+      "expanded": true,
+      "children": [
+        { "id": "11", "title": "Human Resource", "subtitle": "zzz" },
+        {
+          "id": "12",
+          "title": "Bussiness",
+          "subtitle": "zzz",
+          "expanded": true,
+          "children": [
+            {
+              "id": "121",
+              "title": "Store A",
+              "subtitle": "zzz"
+            },
+            { "id": "122", "title": "Store B", "subtitle": "zzz" }
+          ]
+        },
+        {
+          "id": "13",
+          "title": "Dev",
+          "subtitle": "zzz",
+          "expanded": true,
+          "children": [
+            {
+              "id": "131",
+              "title": "Dev A",
+              "subtitle": "zzz"
+            },
+            { "id": "132", "title": "Dev B", "subtitle": "zzz" }
+          ]
+        }
+      ]
+    }
+  ]
+  
