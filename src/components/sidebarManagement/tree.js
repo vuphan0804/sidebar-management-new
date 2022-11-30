@@ -8,19 +8,16 @@ import SortableTree, {
 import "react-sortable-tree/style.css";
 import Loading from "../loading/Loading";
 import HeaderSidebarManagement from "./headerSidebarManagement/HeaderSidebarManagement";
-import SidebarForm from "./sidebarForm/SidebarForm";
 import SidebarFormDelete from "./sidebarForm/SidebarFormDelete.jsx";
-import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
-import TreeManagement from "./treeManagement/TreeManagement";
 import icons from "../../dataIcons/icons";
 import SidebarFormIcon from "./sidebarForm/SidebarFormIcon";
 import FormManagement from "./modal/FormManagement";
+import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
 
 const Tree = ({ data, fetchSidebars }) => {
   const [searchString, setSearchString] = useState("");
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
   const [isOpenFormDelete, setIsOpenFormDelete] = useState(false);
   const [isOpenPopupInfo, setIsOpenPopupInfo] = useState(false);
   const [isOpenFormIcon, setIsOpenFormIcon] = useState(false);
@@ -39,6 +36,7 @@ const Tree = ({ data, fetchSidebars }) => {
   const [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [rowInfoData, setRowInfoData] = useState([]);
+  const [popupInfo, setPopupInfo] = useState([]);
 
   const inputEl = useRef();
   const updateInputEl = useRef();
@@ -59,8 +57,9 @@ const Tree = ({ data, fetchSidebars }) => {
     } else setIsLoading(true);
   }, [treeData]);
 
-  const handleOpenForm = () => {
+  const handleOpenForm = (rowInfo) => {
     setIsOpenForm(true);
+    setSelectedSidebar(rowInfo.node);
   };
 
   const handleCloseForm = () => {
@@ -76,8 +75,9 @@ const Tree = ({ data, fetchSidebars }) => {
     setIsOpenFormDelete(false);
   };
 
-  const handleOpenPopupInfo = () => {
+  const handleOpenPopupInfo = (rowInfo) => {
     setIsOpenPopupInfo(true);
+    setPopupInfo(rowInfo);
   };
 
   const handleClosePopupInfo = () => {
@@ -99,7 +99,6 @@ const Tree = ({ data, fetchSidebars }) => {
   //     rowInfoData.treeIndex
   //   ].style.background = `#d9d9d9  url(/img/${rowInfoData.node.icon}) no-repeat center`;
   // }
-
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
       let x = {
@@ -215,36 +214,36 @@ const Tree = ({ data, fetchSidebars }) => {
   //   // inputEls.current[treeIndex].current.value = "";
   // };
 
-  const updateNode = (rowInfo, newTitle) => {
+  const updateNode = (rowInfo, formValue) => {
     if (!rowInfo) return;
 
     const { node, path } = rowInfo;
-    setSelectedSidebar(node);
+    // setSelectedSidebar(node);
     updateInputEl.current.focus();
 
     // // const value = updateInputEl.current.value;
 
     let newNode = {
-      id: node.id,
-      title: newTitle,
-      expanded: node.expanded,
-      parentId: node.parentId,
-      count: node.count,
-      children: node.children,
-      icon: node.icon,
+      id: formValue.id,
+      title: formValue.title,
+      expanded: formValue.expanded,
+      parentId: formValue.parentId,
+      count: formValue.count,
+      children: formValue.children,
+      icon: formValue.icon,
     };
     let newTree = changeNodeAtPath({
       treeData,
       path,
       getNodeKey,
       newNode: {
-        id: node.id,
-        title: newTitle,
-        expanded: node.expanded,
-        parentId: node.parentId,
-        count: node.count,
-        children: node.children,
-        icon: node.icon,
+        id: formValue.id,
+        title: formValue.title,
+        expanded: formValue.expanded,
+        parentId: formValue.parentId,
+        count: formValue.count,
+        children: formValue.children,
+        icon: formValue.icon,
       },
     });
     setTreeDataUpdateNode(newNode);
@@ -335,7 +334,6 @@ const Tree = ({ data, fetchSidebars }) => {
         `path: [${path.join(", ")}],\n` +
         `treeIndex: ${treeIndex}`
     );
-    handleOpenPopupInfo();
   };
 
   const selectPrevMatch = () => {
@@ -351,11 +349,6 @@ const Tree = ({ data, fetchSidebars }) => {
       searchFocusIndex !== null ? (searchFocusIndex + 1) % searchFoundCount : 0
     );
   };
-  const hiDiv = document.getElementById("hi");
-  const helloDiv = document.getElementsByClassName("hello");
-  for (let i = 0; i < helloDiv.length; i++) {
-    helloDiv[i].classList.add("hello-world");
-  }
   return (
     <div className="ml-10">
       <HeaderSidebarManagement
@@ -467,7 +460,7 @@ const Tree = ({ data, fetchSidebars }) => {
                     <button
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Alert"
-                      onClick={(event) => alertNodeInfo(rowInfo)}
+                      onClick={(event) => handleOpenPopupInfo(rowInfo)}
                     >
                       <i className="fa-sharp fa-solid fa-circle-info"></i>
                     </button>
@@ -483,13 +476,12 @@ const Tree = ({ data, fetchSidebars }) => {
           <Loading />
         )}
       </div>
-      <SidebarFormDelete
-        removeNode={removeNode}
-        rowInfoDelete={rowInfoDelete}
-        onCloseFormDelete={handleCloseFormDelete}
-        isOpenFormDelete={isOpenFormDelete}
+      <FormManagement
+        isOpenForm={isOpenForm}
+        handleCloseForm={handleCloseForm}
+        updateNode={updateNode}
+        selectedSidebar={selectedSidebar}
       />
-      ,
       <SidebarFormIcon
         isOpenFormIcon={isOpenFormIcon}
         handleCloseFormIcon={handleCloseFormIcon}
@@ -498,9 +490,16 @@ const Tree = ({ data, fetchSidebars }) => {
         fetchSidebars={fetchSidebars}
         updateIcon={updateIcon}
       />
-      <FormManagement
-        isOpenForm={isOpenForm}
-        handleCloseForm={handleCloseForm}
+      <SidebarFormDelete
+        removeNode={removeNode}
+        rowInfoDelete={rowInfoDelete}
+        onCloseFormDelete={handleCloseFormDelete}
+        isOpenFormDelete={isOpenFormDelete}
+      />
+      <SidebarPopupInfo
+        isOpenPopupInfo={isOpenPopupInfo}
+        handleClosePopupInfo={handleClosePopupInfo}
+        popupInfo={popupInfo}
       />
     </div>
   );
