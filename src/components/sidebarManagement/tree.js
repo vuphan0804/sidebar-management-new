@@ -447,7 +447,7 @@ const Tree = ({ data, fetchSidebars }) => {
                       id="addChildEl"
                       className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Add Child"
-                      onClick={(event) => handleOpenFormUpdate(rowInfo)}
+                      onClick={(event) => handleOpenFormAddNodeChild(rowInfo)}
                     >
                       <i className="fa-solid fa-plus"></i>
                     </button>
