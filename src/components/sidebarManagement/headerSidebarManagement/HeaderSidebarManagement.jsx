@@ -17,25 +17,20 @@ const HeaderSidebarManagement = ({
   selectNextMatch,
   selectPrevMatch,
   searchFocusIndex,
-  treeData,
   selectedSidebar,
   fetchSidebars,
-  treeDataUpdate,
   treeDataUpdateAll,
   treeDataUpdateNode,
   treeDataAddNode,
   treeDataAddNodeChild,
   treeDataRemoveNode,
   selectedNodeParent,
-  setTreeDataUpdate,
 }) => {
   const [updateSidebar, setUpdateSidebar] = useState(selectedSidebar); //rowInfo
   const [input, setInput] = useState("");
   const [originalDataAll, setOriginalDataAll] = useState([]);
-  const [originalDataUpdate, setOriginalDataUpdate] = useState([]);
   const [addNodeChildSidebar, setAddNodeChildSidebar] =
     useState(selectedNodeParent);
-  const [inputAddNodeChild, setInputAddNodeChild] = useState("");
 
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
@@ -49,7 +44,7 @@ const HeaderSidebarManagement = ({
   useEffect(() => {
     setOriginalDataAll(deParseData(treeDataUpdateAll, []));
   }, [treeDataUpdateAll]);
-
+  console.log("treeDataUpdateAll", treeDataUpdateAll);
   // useEffect(() => {
   //   setOriginalDataUpdate(deParseData(treeDataUpdate, []));
   // }, [treeDataUpdate]);
@@ -104,8 +99,6 @@ const HeaderSidebarManagement = ({
   const handleSaving = async () => {
     const mockApiSideBars = await sidebarAPI.getSidebars();
     const mockApiIds = mockApiSideBars.data.map((e) => e.id);
-    const originalDataAllIds = originalDataAll.map((e) => e.id);
-
     // Update sidebars
 
     Promise.all(
@@ -157,12 +150,6 @@ const HeaderSidebarManagement = ({
       .catch(() => showToastMessageError("Add node child error!"))
       .catch((error) => console.log("error", error));
   }, [treeDataAddNodeChild]);
-
-  const addNodeChildHandler = async () => {
-    if (addNodeChildSidebar) {
-      addNodeChild(addNodeChildSidebar, inputAddNodeChild);
-    }
-  };
 
   const updateHandler = async () => {
     if (updateSidebar) {

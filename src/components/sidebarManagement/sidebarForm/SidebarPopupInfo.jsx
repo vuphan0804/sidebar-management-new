@@ -1,28 +1,16 @@
-import React, { useCallback, useRef } from "react";
+import React from "react";
 
 const SidebarForm = ({ isOpenPopupInfo, handleClosePopupInfo, popupInfo }) => {
   const node = popupInfo?.node;
-  // const objInfoNode = () => {
-  //   if (node) {
-  //     return Object.keys(node).map((key, index) => {
-  //       return (
-  //         <div key={index}>
-  //           - {key} : {node[key]}
-  //         </div>
-  //       );
-  //     });
-  //   }
-  // };
+
   const objInfoNode = () => {
     if (node) {
       return (
         <div>{Object.entries(node).join(" - \n").replaceAll(",", ":  ")}</div>
       );
-      //   console.log("arrayInfoNode", arrayInfoNode.join(" \n"));
     }
   };
 
-  console.log("popupInfoz", popupInfo);
   return (
     <div>
       {isOpenPopupInfo ? (

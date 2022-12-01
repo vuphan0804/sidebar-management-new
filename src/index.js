@@ -30,10 +30,10 @@ const App = () => {
 
   useEffect(() => {
     const parentArr = _.sortBy(treeData, ["count"]).filter(
-      (a) => a.parentId === null
+      (a) => a.parentId === ""
     );
     const childArr = _.sortBy(treeData, ["count"]).filter(
-      (a) => a.parentId !== null
+      (a) => a.parentId !== ""
     );
     setTreeDataParse(parseData(parentArr, childArr));
   }, [treeData]);

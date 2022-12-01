@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import { toast } from "react-toastify";
 import icons from "../../../dataIcons/icons";
@@ -16,6 +16,9 @@ const SidebarFormIcon = ({
     selectedNodeUpdateIcon
   );
 
+  console.log("selectedNodeUpdateIcon zzz", selectedNodeUpdateIcon);
+  console.log("treeDataUpdateIcon zzz", treeDataUpdateIcon);
+  console.log("selectedIcon zzz", selectedIcon);
   useEffect(() => {
     callbackUpdateIcon();
   }, [treeDataUpdateIcon]);
