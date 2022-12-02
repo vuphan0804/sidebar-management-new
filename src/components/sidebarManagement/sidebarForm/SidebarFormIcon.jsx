@@ -15,10 +15,6 @@ const SidebarFormIcon = ({
   const [updateIconSelected, setUpdateIconSelected] = useState(
     selectedNodeUpdateIcon
   );
-
-  console.log("selectedNodeUpdateIcon zzz", selectedNodeUpdateIcon);
-  console.log("treeDataUpdateIcon zzz", treeDataUpdateIcon);
-  console.log("selectedIcon zzz", selectedIcon);
   useEffect(() => {
     callbackUpdateIcon();
   }, [treeDataUpdateIcon]);
@@ -104,7 +100,7 @@ const SidebarFormIcon = ({
                       >
                         <img
                           className="w-10 h-10 mx-auto "
-                          src={`/img/${icon}`}
+                          src={`${icon}`}
                           alt=""
                         />
                       </button>

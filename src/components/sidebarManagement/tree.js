@@ -94,7 +94,8 @@ const Tree = ({ data, fetchSidebars }) => {
     setIsOpenFormIcon(false);
   };
 
-  const handleOpenFormAddNodeChild = () => {
+  const handleOpenFormAddNodeChild = (rowInfo) => {
+    setSelectedNodeParent(rowInfo);
     setIsOpenFormAddNodeChild(true);
   };
 
@@ -225,9 +226,7 @@ const Tree = ({ data, fetchSidebars }) => {
 
   const updateNode = (rowInfo, formValue) => {
     if (!rowInfo) return;
-    console.log("rowInfo", rowInfo);
     const { node, path } = rowInfo;
-    console.log("path", path);
     setSelectedSidebar(node);
     // updateInputEl.current.focus();
 
@@ -433,12 +432,17 @@ const Tree = ({ data, fetchSidebars }) => {
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
-              const moveHandle =
-                document.getElementsByClassName("rst__moveHandle");
-              if (moveHandle[rowInfo.treeIndex]) {
-                moveHandle[
-                  rowInfo.treeIndex
-                ].style.background = `#d9d9d9  url(/img/${rowInfo.node.icon}) no-repeat center`;
+              if (rowInfo) {
+                const moveHandle =
+                  document.getElementsByClassName("rst__moveHandle");
+                if (moveHandle[rowInfo.treeIndex]) {
+                  moveHandle[
+                    rowInfo.treeIndex
+                  ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
+                  moveHandle[
+                    rowInfo.treeIndex
+                  ].style.backgroundSize = `32px 32px`;
+                }
               }
               return {
                 buttons: [
@@ -502,8 +506,11 @@ const Tree = ({ data, fetchSidebars }) => {
       <FormAddNodeChild
         isOpenFormAddNodeChild={isOpenFormAddNodeChild}
         handleCloseFormAddNodeChild={handleCloseFormAddNodeChild}
-        updateNode={updateNode}
+        selectedNodeParent={selectedNodeParent}
         treeDataAddNodeChild={treeDataAddNodeChild}
+        fetchSidebars={fetchSidebars}
+        showToastMessageSuccess={showToastMessageSuccess}
+        showToastMessageError={showToastMessageError}
       />
       <FormUpdateNode
         isOpenFormUpdate={isOpenFormUpdate}
@@ -513,6 +520,7 @@ const Tree = ({ data, fetchSidebars }) => {
         treeDataUpdateNode={treeDataUpdateNode}
         showToastMessageSuccess={showToastMessageSuccess}
         showToastMessageError={showToastMessageError}
+        fetchSidebars={fetchSidebars}
       />
       <SidebarFormIcon
         isOpenFormIcon={isOpenFormIcon}

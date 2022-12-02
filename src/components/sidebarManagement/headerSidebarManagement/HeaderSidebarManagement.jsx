@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import { toast } from "react-toastify";
+import FormAddNode from "./FormAddNode";
 
 const HeaderSidebarManagement = ({
   inputEl,
@@ -31,6 +32,7 @@ const HeaderSidebarManagement = ({
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [addNodeChildSidebar, setAddNodeChildSidebar] =
     useState(selectedNodeParent);
+  const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
 
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
@@ -44,7 +46,6 @@ const HeaderSidebarManagement = ({
   useEffect(() => {
     setOriginalDataAll(deParseData(treeDataUpdateAll, []));
   }, [treeDataUpdateAll]);
-  console.log("treeDataUpdateAll", treeDataUpdateAll);
   // useEffect(() => {
   //   setOriginalDataUpdate(deParseData(treeDataUpdate, []));
   // }, [treeDataUpdate]);
@@ -193,6 +194,13 @@ const HeaderSidebarManagement = ({
     window.location.reload();
   };
 
+  const handleOpenFormAddNode = () => {
+    setIsOpenFormAddNode(true);
+  };
+  const handleCloseFormAddNode = () => {
+    setIsOpenFormAddNode(false);
+  };
+
   return (
     <div className="mt-32" style={{ flex: "0 0 auto", padding: "0 15px" }}>
       <h3 className="text-3xl hello font-medium text-center mb-5">
@@ -202,7 +210,7 @@ const HeaderSidebarManagement = ({
         <div className="flex mb-2">
           <button
             className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-            onClick={createNode}
+            onClick={handleOpenFormAddNode}
           >
             Create Node
           </button>
@@ -213,7 +221,7 @@ const HeaderSidebarManagement = ({
           />
           <br />
         </div>
-        <div className="flex mb-2">
+        {/* <div className="flex mb-2">
           <button
             className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
             onClick={addNodeChild}
@@ -242,7 +250,7 @@ const HeaderSidebarManagement = ({
             onChange={(e) => setInput(e.target.value)}
           />
           <br />
-        </div>
+        </div> */}
         <div className="flex">
           <button
             className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
@@ -316,6 +324,14 @@ const HeaderSidebarManagement = ({
           {searchFoundCount || 0}
         </span>
       </form>
+      <FormAddNode
+        handleOpenFormAddNode={handleOpenFormAddNode}
+        handleCloseFormAddNode={handleCloseFormAddNode}
+        isOpenFormAddNode={isOpenFormAddNode}
+        fetchSidebars={fetchSidebars}
+        showToastMessageError={showToastMessageError}
+        showToastMessageSuccess={showToastMessageSuccess}
+      />
     </div>
   );
 };
