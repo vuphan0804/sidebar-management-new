@@ -521,6 +521,8 @@ const Tree = ({ data, fetchSidebars }) => {
         showToastMessageSuccess={showToastMessageSuccess}
         showToastMessageError={showToastMessageError}
         fetchSidebars={fetchSidebars}
+        treeData={treeData}
+        deParseData={deParseData}
       />
       <SidebarFormIcon
         isOpenFormIcon={isOpenFormIcon}

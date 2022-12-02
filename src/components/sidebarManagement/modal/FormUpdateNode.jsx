@@ -9,6 +9,8 @@ const FormManagement = ({
   fetchSidebars,
   showToastMessageSuccess,
   showToastMessageError,
+  treeData,
+  deParseData,
 }) => {
   const [formValue, setFormValue] = useState({
     title: "",
@@ -20,10 +22,11 @@ const FormManagement = ({
   });
   const [updateNodeSidebar, setUpdateNodeSidebar] = useState(selectedSidebar);
   const [isSelectedIcon, setIsselectedIcon] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState([]);
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
+  const [originalTreeData, setOriginalTreeData] = useState([]);
 
+  console.log("treeData", treeData);
   const handleSelectedIcon = () => {
     setIsselectedIcon(true);
   };
@@ -50,8 +53,12 @@ const FormManagement = ({
   useEffect(() => {
     if (!isOpenFormUpdate) {
       handleNotSelectedIcon();
+      setInputIconURL("");
     }
   }, [isOpenFormUpdate]);
+  useEffect(() => {
+    setOriginalTreeData(deParseData(treeData, []));
+  }, [treeData]);
 
   const handleChange = (name, value) => {
     setFormValue((prev) => {
@@ -171,7 +178,7 @@ const FormManagement = ({
                     >
                       parentId
                     </label>
-                    <input
+                    {/* <input
                       value={formValue.parentId}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
@@ -181,7 +188,19 @@ const FormManagement = ({
                       id="parentId"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="null is parent node"
-                    />
+                    /> */}
+                    <select
+                      name="parentId"
+                      id="parentId"
+                      className="w-32 h-10"
+                      onChange={(e) => {
+                        handleChange(e.target.name, e.target.value);
+                      }}
+                    >
+                      {originalTreeData?.map((node) => {
+                        return <option value={node.id}>{node.title}</option>;
+                      })}
+                    </select>
                   </div>
 
                   <div>

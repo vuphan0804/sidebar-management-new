@@ -66,9 +66,9 @@ const FormAddNodeChild = ({
     if (addNodeChild) {
       await sidebarAPI
         .addSidebar(addNodeChild)
-        .then(() => showToastMessageSuccess("Update node successfully!"))
+        .then(() => showToastMessageSuccess("Add node child successfully!"))
         .then((msgSuccess) => fetchSidebars())
-        .catch(() => showToastMessageError("Update node error!"))
+        .catch(() => showToastMessageError("Add node child error!"))
         .catch((error) => console.log("error", error));
     }
     handleCloseFormAddNodeChild();
@@ -164,6 +164,7 @@ const FormAddNodeChild = ({
                       parentId
                     </label>
                     <input
+                      disabled
                       value={formValue.parentId}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);

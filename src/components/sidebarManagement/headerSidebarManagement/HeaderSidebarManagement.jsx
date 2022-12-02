@@ -33,7 +33,7 @@ const HeaderSidebarManagement = ({
   const [addNodeChildSidebar, setAddNodeChildSidebar] =
     useState(selectedNodeParent);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
-
+  console.log("treeDataUpdateAll", treeDataUpdateAll);
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
     setInput(selectedSidebar?.node?.title || "");
@@ -207,18 +207,18 @@ const HeaderSidebarManagement = ({
         Sidebar Management
       </h3>
       <div className="grid grid-cols-2">
-        <div className="flex mb-2">
+        <div className="flex">
           <button
             className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
             onClick={handleOpenFormAddNode}
           >
             Create Node
           </button>
-          <input
+          {/* <input
             className="border p-2 rounded-md transition-primary"
             ref={inputEl}
             type="text"
-          />
+          /> */}
           <br />
         </div>
         {/* <div className="flex mb-2">

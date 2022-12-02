@@ -57,9 +57,9 @@ const FormManagement = ({
     if (nodeAdd.id) {
       await sidebarAPI
         .addSidebar(nodeAdd)
-        .then(() => showToastMessageSuccess("AddNode node successfully!"))
+        .then(() => showToastMessageSuccess("Add node successfully!"))
         .then((msgSuccess) => fetchSidebars())
-        .catch(() => showToastMessageError("AddNode node error!"))
+        .catch(() => showToastMessageError("Add node error!"))
         .catch((error) => console.log("error", error));
     }
     handleCloseFormAddNode();
@@ -153,6 +153,7 @@ const FormManagement = ({
                       parentId
                     </label>
                     <input
+                      disabled
                       value={formValue.parentId}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
@@ -160,8 +161,8 @@ const FormManagement = ({
                       type="text"
                       name="parentId"
                       id="parentId"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="null is parent node"
+                      className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      placeholder="Empty is parent node"
                     />
                   </div>
 
