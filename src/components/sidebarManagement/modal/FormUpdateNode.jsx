@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import icons from "../../../dataIcons/icons";
 import { toast } from "react-toastify";
-const FormManagement = ({
+const FormUpdateNode = ({
   isOpenFormUpdate,
   handleCloseFormUpdate,
   selectedSidebar,
@@ -24,9 +24,7 @@ const FormManagement = ({
   const [isSelectedIcon, setIsselectedIcon] = useState(false);
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
-  const [originalTreeData, setOriginalTreeData] = useState([]);
 
-  console.log("treeData", treeData);
   const handleSelectedIcon = () => {
     setIsselectedIcon(true);
   };
@@ -56,9 +54,6 @@ const FormManagement = ({
       setInputIconURL("");
     }
   }, [isOpenFormUpdate]);
-  useEffect(() => {
-    setOriginalTreeData(deParseData(treeData, []));
-  }, [treeData]);
 
   const handleChange = (name, value) => {
     setFormValue((prev) => {
@@ -132,7 +127,7 @@ const FormManagement = ({
                   Update node
                 </h3>
                 <form className="grid grid-cols-2 gap-5" action="#">
-                  <div>
+                  <div className="">
                     <label
                       htmlFor="title"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -151,57 +146,33 @@ const FormManagement = ({
                       placeholder="title"
                     />
                   </div>
-                  <div>
-                    <label
-                      htmlFor="id"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      ID Node
-                    </label>
-                    <input
-                      disabled={true}
-                      value={formValue.id}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="number"
-                      name="id"
-                      id="id"
-                      className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Id Node"
-                    />
-                  </div>
-                  <div>
+
+                  {/* <div>
                     <label
                       htmlFor="parentId"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      parentId
+                      Parent Node
                     </label>
-                    {/* <input
-                      value={formValue.parentId}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="text"
-                      name="parentId"
-                      id="parentId"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="null is parent node"
-                    /> */}
                     <select
                       name="parentId"
                       id="parentId"
-                      className="w-32 h-10"
+                      className="w-full h-3/5 rounded-md border border-gray-300"
+                      label="Choose a parent"
+                      value={selectedSidebar.parentNode?.id}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
                     >
-                      {originalTreeData?.map((node) => {
-                        return <option value={node.id}>{node.title}</option>;
+                      {originalTreeData?.map((node, index) => {
+                        return (
+                          <option key={index} value={node.id}>
+                            {node.title}
+                          </option>
+                        );
                       })}
                     </select>
-                  </div>
+                  </div> */}
 
                   <div>
                     <label
@@ -371,4 +342,4 @@ const FormManagement = ({
   );
 };
 
-export default FormManagement;
+export default FormUpdateNode;
