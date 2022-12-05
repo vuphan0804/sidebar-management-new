@@ -15,7 +15,7 @@ import FormAddNodeChild from "./modal/FormAddNodeChild";
 import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
 import { toast } from "react-toastify";
 
-const Tree = ({ data, fetchSidebars }) => {
+const Tree = ({ data, originalData, fetchSidebars }) => {
   const [searchString, setSearchString] = useState("");
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(null);
@@ -38,6 +38,7 @@ const Tree = ({ data, fetchSidebars }) => {
   const [isOpenFormUpdate, setIsOpenFormUpdate] = useState(false);
   const [popupInfo, setPopupInfo] = useState([]);
   const [isOpenFormAddNodeChild, setIsOpenFormAddNodeChild] = useState(false);
+  const [rowInfoGenerate, setRowInfoGenerate] = useState([]);
 
   const inputEl = useRef();
   const updateInputEl = useRef();
@@ -57,6 +58,20 @@ const Tree = ({ data, fetchSidebars }) => {
       }, 2000);
     } else setIsLoading(true);
   }, [treeData]);
+
+  // console.log("treeData", treeData);
+
+  // const moveHandle = document.getElementsByClassName("rst__moveHandle");
+  // if (originalData) {
+  //   for (let i = 0; i + 1 < originalData.length; i++) {
+  //     if (moveHandle[originalData[i].id]) {
+  //       moveHandle[
+  //         originalData[i].id
+  //       ].style.background = `#d9d9d9  url(${originalData[i].icon}) no-repeat center`;
+  //       moveHandle[originalData[i].id].style.backgroundSize = `32px 32px`;
+  //     }
+  //   }
+  // }
 
   const handleOpenFormUpdate = (rowInfo) => {
     setIsOpenFormUpdate(true);
@@ -324,12 +339,14 @@ const Tree = ({ data, fetchSidebars }) => {
     );
   };
 
-  const expandAll = () => {
+  const expandAll = (rowInfo) => {
     expand(true);
+    handleRenderIcon(rowInfo);
   };
 
   const collapseAll = () => {
     expand(false);
+    handleRenderIcon();
   };
 
   // const alertNodeInfo = ({ node, path, treeIndex }) => {
@@ -369,6 +386,18 @@ const Tree = ({ data, fetchSidebars }) => {
     toast.error(msg, {
       position: toast.POSITION.TOP_RIGHT,
     });
+  };
+
+  const handleRenderIcon = (rowInfo) => {
+    if (rowInfo) {
+      const moveHandle = document.getElementsByClassName("rst__moveHandle");
+      if (moveHandle[rowInfo.treeIndex]) {
+        moveHandle[
+          rowInfo.treeIndex
+        ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
+        moveHandle[rowInfo.treeIndex].style.backgroundSize = `32px 32px`;
+      }
+    }
   };
 
   return (
@@ -432,18 +461,7 @@ const Tree = ({ data, fetchSidebars }) => {
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
-              if (rowInfo) {
-                const moveHandle =
-                  document.getElementsByClassName("rst__moveHandle");
-                if (moveHandle[rowInfo.treeIndex]) {
-                  moveHandle[
-                    rowInfo.treeIndex
-                  ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
-                  moveHandle[
-                    rowInfo.treeIndex
-                  ].style.backgroundSize = `32px 32px`;
-                }
-              }
+              handleRenderIcon(rowInfo);
               return {
                 buttons: [
                   <div className="text-sm">

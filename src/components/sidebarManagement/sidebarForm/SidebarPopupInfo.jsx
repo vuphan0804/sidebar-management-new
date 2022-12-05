@@ -6,7 +6,9 @@ const SidebarForm = ({ isOpenPopupInfo, handleClosePopupInfo, popupInfo }) => {
   const objInfoNode = () => {
     if (node) {
       return (
-        <div>{Object.entries(node).join(" - \n").replaceAll(",", ":  ")}</div>
+        <div className="break-words">
+          {Object.entries(node).join(" - \n").replaceAll(",", ":  ")}
+        </div>
       );
     }
   };

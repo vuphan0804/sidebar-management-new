@@ -33,7 +33,7 @@ const HeaderSidebarManagement = ({
   const [addNodeChildSidebar, setAddNodeChildSidebar] =
     useState(selectedNodeParent);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
-  console.log("treeDataUpdateAll", treeDataUpdateAll);
+
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
     setInput(selectedSidebar?.node?.title || "");

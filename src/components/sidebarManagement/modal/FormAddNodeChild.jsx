@@ -13,15 +13,15 @@ const FormAddNodeChild = ({
   const [addNodeChild, setAddNodeChild] = useState(selectedNodeParent);
   const [formValue, setFormValue] = useState({
     title: "",
-    id: "",
     parentId: "",
     count: "",
     icon: "",
-    children: [],
   });
 
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
+  const [inputIconLocal, setInputIconLocal] = useState("");
+  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
 
   const handleChangeIcon = () => {
     setCheckedIcon(!checkedIcon);
@@ -45,8 +45,25 @@ const FormAddNodeChild = ({
         ...prev,
         icon: inputIconURL,
       }));
+      setIsDisabledIconLocal(true);
+    } else {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconLocal,
+      }));
+      setIsDisabledIconLocal(false);
     }
   }, [checkedIcon]);
+
+  useEffect(() => {
+    if (!checkedIcon) {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconURL,
+      }));
+    }
+  }, [inputIconURL]);
+
   const handleChange = (name, value) => {
     setFormValue((prev) => {
       return {
@@ -59,7 +76,6 @@ const FormAddNodeChild = ({
     const addNodeChild = {
       title: formValue.title,
       parentId: formValue.parentId,
-      id: formValue.id,
       count: formValue.count,
       icon: formValue.icon,
     };
@@ -77,6 +93,12 @@ const FormAddNodeChild = ({
   useEffect(() => {
     if (!isOpenFormAddNodeChild) {
       formValue.icon = "";
+      formValue.title = "";
+      formValue.count = "";
+      formValue.parentId = "";
+      setInputIconLocal("");
+      setInputIconURL("");
+      setCheckedIcon(true);
     }
   }, [isOpenFormAddNodeChild]);
 
@@ -136,7 +158,7 @@ const FormAddNodeChild = ({
                       placeholder="title"
                     />
                   </div>
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="id"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -175,7 +197,7 @@ const FormAddNodeChild = ({
                       className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="Empty is parent node"
                     />
-                  </div>
+                  </div> */}
 
                   <div>
                     <label
@@ -202,7 +224,6 @@ const FormAddNodeChild = ({
                       htmlFor="icon"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      {" "}
                       <input
                         className="mr-2"
                         type="checkbox"
@@ -219,6 +240,7 @@ const FormAddNodeChild = ({
                       {icons.map((iconz, index) => {
                         return (
                           <button
+                            disabled={isDisabledIconLocal}
                             className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                             type="button"
                             key={index}
@@ -229,6 +251,7 @@ const FormAddNodeChild = ({
                                 e.currentTarget.name,
                                 e.currentTarget.value
                               );
+                              setInputIconLocal(iconz);
                             }}
                           >
                             <img
@@ -243,14 +266,14 @@ const FormAddNodeChild = ({
                   </div>
                   <div className="text-center mt-16">
                     <p className="mb-2">Icon select:</p>
-                    {formValue.icon ? (
+                    {inputIconLocal ? (
                       <button
                         className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                         type="button"
                       >
                         <img
                           className="w-8 h-8 mx-auto"
-                          src={`${formValue.icon}`}
+                          src={`${inputIconLocal}`}
                           alt=""
                         />
                       </button>
@@ -281,7 +304,8 @@ const FormAddNodeChild = ({
                       placeholder="iconURL"
                     />
                   </div>
-                  <div className="text-center mt-6">
+                  <div className="text-center">
+                    <p>Icon URL select:</p>
                     {inputIconURL ? (
                       <button
                         className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"

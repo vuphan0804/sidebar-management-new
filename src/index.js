@@ -28,13 +28,26 @@ const App = () => {
     fetchSidebars();
   }, []);
 
+  // useEffect(() => {
+  //   const parentArr = _.sortBy(treeData, ["count"]).filter(
+  //     (a) => a.parentId === ""
+  //   );
+  //   const childArr = _.sortBy(treeData, ["count"]).filter(
+  //     (a) => a.parentId !== ""
+  //   );
+  //   setTreeDataParse(parseData(parentArr, childArr));
+  // }, [treeData]);
   useEffect(() => {
-    const parentArr = _.sortBy(treeData, ["count"]).filter(
-      (a) => a.parentId === ""
-    );
-    const childArr = _.sortBy(treeData, ["count"]).filter(
-      (a) => a.parentId !== ""
-    );
+    const parentArr = _.sortBy(
+      treeData,
+      (obj) => parseInt(obj.count),
+      10
+    ).filter((a) => a.parentId === "");
+    const childArr = _.sortBy(
+      treeData,
+      (obj) => parseInt(obj.count),
+      10
+    ).filter((a) => a.parentId !== "");
     setTreeDataParse(parseData(parentArr, childArr));
   }, [treeData]);
 
@@ -66,7 +79,11 @@ const App = () => {
             </ProSidebarProvider>
           </div>
           <div className="col-span-3">
-            <Tree fetchSidebars={fetchSidebars} data={treeDataParse} />
+            <Tree
+              fetchSidebars={fetchSidebars}
+              originalData={treeData}
+              data={treeDataParse}
+            />
           </div>
         </div>
         <ScrollButton />

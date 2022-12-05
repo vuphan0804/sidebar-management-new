@@ -18,15 +18,13 @@ const FormManagement = ({
     parentId: "",
     count: "",
     icon: "",
-    children: [],
   });
-  const [updateNodeSidebar, setUpdateNodeSidebar] = useState(selectedSidebar);
   const [isSelectedIcon, setIsselectedIcon] = useState(false);
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
-  const [originalTreeData, setOriginalTreeData] = useState([]);
+  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
+  const [inputIconLocal, setInputIconLocal] = useState("");
 
-  console.log("treeData", treeData);
   const handleSelectedIcon = () => {
     setIsselectedIcon(true);
   };
@@ -40,25 +38,13 @@ const FormManagement = ({
   };
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
-    setFormValue((prev) => ({ ...prev, icon: value }));
   };
 
   useEffect(() => {
     if (selectedSidebar) {
       setFormValue(selectedSidebar?.node);
-      setUpdateNodeSidebar(selectedSidebar);
     }
   }, [selectedSidebar]);
-
-  useEffect(() => {
-    if (!isOpenFormUpdate) {
-      handleNotSelectedIcon();
-      setInputIconURL("");
-    }
-  }, [isOpenFormUpdate]);
-  useEffect(() => {
-    setOriginalTreeData(deParseData(treeData, []));
-  }, [treeData]);
 
   const handleChange = (name, value) => {
     setFormValue((prev) => {
@@ -74,8 +60,25 @@ const FormManagement = ({
         ...prev,
         icon: inputIconURL,
       }));
+      setIsDisabledIconLocal(true);
+    } else {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconLocal,
+      }));
+      setIsDisabledIconLocal(false);
     }
   }, [checkedIcon]);
+
+  useEffect(() => {
+    if (!checkedIcon) {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconURL,
+      }));
+    }
+  }, [inputIconURL]);
+
   const callbackUpdateNode = useCallback(async () => {
     const nodeUpdate = {
       title: formValue.title,
@@ -95,6 +98,16 @@ const FormManagement = ({
     }
     handleCloseFormUpdate();
   }, [formValue]);
+
+  useEffect(() => {
+    if (!isOpenFormUpdate) {
+      handleNotSelectedIcon();
+      setInputIconURL("");
+      setInputIconLocal("");
+      setCheckedIcon(true);
+    }
+  }, [isOpenFormUpdate]);
+  console.log("formValue", formValue);
 
   return (
     <div>
@@ -151,7 +164,7 @@ const FormManagement = ({
                       placeholder="title"
                     />
                   </div>
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="id"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -177,18 +190,7 @@ const FormManagement = ({
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
                       parentId
-                    </label>
-                    {/* <input
-                      value={formValue.parentId}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="text"
-                      name="parentId"
-                      id="parentId"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="null is parent node"
-                    /> */}
+                    </label>             
                     <select
                       name="parentId"
                       id="parentId"
@@ -201,7 +203,7 @@ const FormManagement = ({
                         return <option value={node.id}>{node.title}</option>;
                       })}
                     </select>
-                  </div>
+                  </div> */}
 
                   <div>
                     <label
@@ -244,6 +246,7 @@ const FormManagement = ({
                       {icons.map((iconz, index) => {
                         return (
                           <button
+                            disabled={isDisabledIconLocal}
                             className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                             type="button"
                             key={index}
@@ -255,6 +258,7 @@ const FormManagement = ({
                                 e.currentTarget.value
                               );
                               handleSelectedIcon();
+                              setInputIconLocal(iconz);
                             }}
                           >
                             <img
@@ -279,14 +283,14 @@ const FormManagement = ({
                       />
                     </button>
                     <i className="m-4 fa-solid fa-arrow-right"></i>
-                    {isSelectedIcon ? (
+                    {inputIconLocal ? (
                       <button
                         className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                         type="button"
                       >
                         <img
                           className="w-8 h-8 mx-auto"
-                          src={`${formValue.icon}`}
+                          src={`${inputIconLocal}`}
                           alt=""
                         />
                       </button>
@@ -330,7 +334,7 @@ const FormManagement = ({
                       />
                     </button>
                     <i className="m-4 fa-solid fa-arrow-right"></i>
-                    {inputIconURL ? (
+                    {inputIconURL !== "" ? (
                       <button
                         className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                         type="button"
