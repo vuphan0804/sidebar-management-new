@@ -205,21 +205,19 @@ const HeaderSidebarManagement = ({
       <h3 className="text-3xl hello font-medium text-center mb-5">
         Sidebar Management
       </h3>
-      <div className="grid grid-cols-2">
-        <div className="flex">
-          <button
-            className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-            onClick={handleOpenFormAddNode}
-          >
-            Create Node
-          </button>
-          {/* <input
+      <div className="">
+        <button
+          className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
+          onClick={handleOpenFormAddNode}
+        >
+          Create Node
+        </button>
+        {/* <input
             className="border p-2 rounded-md transition-primary"
             ref={inputEl}
             type="text"
           /> */}
-          <br />
-        </div>
+
         {/* <div className="flex mb-2">
           <button
             className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
@@ -250,16 +248,15 @@ const HeaderSidebarManagement = ({
           />
           <br />
         </div> */}
-        <div className="flex">
-          <button
-            className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-            onClick={reloadPage}
-          >
-            Refresh Page
-          </button>
 
-          <br />
-        </div>
+        <button
+          className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
+          onClick={reloadPage}
+        >
+          Refresh Page
+        </button>
+
+        <br />
       </div>
       <br />
       <button

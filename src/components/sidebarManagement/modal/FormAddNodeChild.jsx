@@ -22,6 +22,8 @@ const FormAddNodeChild = ({
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
+  const titleRef = useRef();
+  const countRef = useRef();
 
   const handleChangeIcon = () => {
     setCheckedIcon(!checkedIcon);
@@ -74,6 +76,18 @@ const FormAddNodeChild = ({
     });
   };
   const callbackAddNodeChild = useCallback(async () => {
+    const titleValue = titleRef.current.value;
+    const countValue = countRef.current.value;
+
+    if (titleValue === "") {
+      titleRef.current.focus();
+      return;
+    }
+
+    if (countValue === "") {
+      countRef.current.focus();
+      return;
+    }
     const addNodeChild = {
       title: formValue.title,
       parentId: formValue.parentId,
@@ -152,6 +166,7 @@ const FormAddNodeChild = ({
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
+                      ref={titleRef}
                       type="text"
                       name="title"
                       id="title"
@@ -212,6 +227,7 @@ const FormAddNodeChild = ({
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
+                      ref={countRef}
                       type="number"
                       name="count"
                       id="count"
@@ -326,7 +342,7 @@ const FormAddNodeChild = ({
                   <button
                     data-modal-toggle="popup-modal"
                     type="submit"
-                    className="text-white bg-blue-400 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2 transition-primary"
+                    className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2 transition-primary"
                     onClick={() => callbackAddNodeChild()}
                   >
                     Accept

@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import icons from "../../../dataIcons/icons";
-import { toast } from "react-toastify";
 const FormUpdateNode = ({
   isOpenFormUpdate,
   handleCloseFormUpdate,
@@ -9,8 +8,6 @@ const FormUpdateNode = ({
   fetchSidebars,
   showToastMessageSuccess,
   showToastMessageError,
-  treeData,
-  deParseData,
 }) => {
   const [formValue, setFormValue] = useState({
     title: "",
@@ -19,19 +16,13 @@ const FormUpdateNode = ({
     count: "",
     icon: "",
   });
-  const [isSelectedIcon, setIsselectedIcon] = useState(false);
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
   const [inputIconLocal, setInputIconLocal] = useState("");
 
-  const handleSelectedIcon = () => {
-    setIsselectedIcon(true);
-  };
-
-  const handleNotSelectedIcon = () => {
-    setIsselectedIcon(false);
-  };
+  const titleRef = useRef();
+  const countRef = useRef();
 
   const handleChangeIcon = () => {
     setCheckedIcon(!checkedIcon);
@@ -80,6 +71,18 @@ const FormUpdateNode = ({
   }, [inputIconURL]);
 
   const callbackUpdateNode = useCallback(async () => {
+    const titleValue = titleRef.current.value;
+    const countValue = countRef.current.value;
+
+    if (titleValue === "") {
+      titleRef.current.focus();
+      return;
+    }
+
+    if (countValue === "") {
+      countRef.current.focus();
+      return;
+    }
     const nodeUpdate = {
       title: formValue.title,
       parentId: formValue.parentId,
@@ -101,13 +104,11 @@ const FormUpdateNode = ({
 
   useEffect(() => {
     if (!isOpenFormUpdate) {
-      handleNotSelectedIcon();
       setInputIconURL("");
       setInputIconLocal("");
       setCheckedIcon(true);
     }
   }, [isOpenFormUpdate]);
-  console.log("formValue", formValue);
 
   return (
     <div>
@@ -157,6 +158,7 @@ const FormUpdateNode = ({
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
+                      ref={titleRef}
                       type="text"
                       name="title"
                       id="title"
@@ -189,13 +191,8 @@ const FormUpdateNode = ({
                       htmlFor="parentId"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-<<<<<<< HEAD
                       parentId
                     </label>             
-=======
-                      Parent Node
-                    </label>
->>>>>>> 3c55c9f6b943346cea1bffa5ebe141ca722818bc
                     <select
                       name="parentId"
                       id="parentId"
@@ -228,6 +225,7 @@ const FormUpdateNode = ({
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
+                      ref={countRef}
                       type="number"
                       name="count"
                       id="count"
@@ -268,7 +266,6 @@ const FormUpdateNode = ({
                                 e.currentTarget.name,
                                 e.currentTarget.value
                               );
-                              handleSelectedIcon();
                               setInputIconLocal(iconz);
                             }}
                           >
@@ -363,7 +360,7 @@ const FormUpdateNode = ({
                   <button
                     data-modal-toggle="popup-modal"
                     type="submit"
-                    className="text-white bg-blue-400 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2 transition-primary"
+                    className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2 transition-primary"
                     onClick={() => callbackUpdateNode()}
                   >
                     Accept

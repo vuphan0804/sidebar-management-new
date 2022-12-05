@@ -72,7 +72,7 @@ const App = () => {
     <BrowserRouter>
       <div>
         <Header />
-        <div className="grid grid-cols-4 gap-2 transition-primary">
+        <div className="grid grid-cols-4 transition-primary">
           <div className="col-span-1">
             <ProSidebarProvider>
               <SidebarMain data={treeDataParse} fetchSidebars={fetchSidebars} />

@@ -43,8 +43,17 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
   const inputEl = useRef();
   const updateInputEl = useRef();
   const inputChildEl = useRef();
-  const getNodeKey = ({ treeIndex }) => treeIndex;
+  const getNodeKey = ({ treeIndex }) => console.log("treeIndex", treeIndex);
 
+  // if (treeIndex) {
+  //   const moveHandle = document.getElementsByClassName("rst__moveHandle");
+  //   if (moveHandle[rowInfo.treeIndex]) {
+  //     moveHandle[
+  //       rowInfo.treeIndex
+  //     ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
+  //     moveHandle[rowInfo.treeIndex].style.backgroundSize = `32px 32px`;
+  //   }
+  // }
   useEffect(() => {
     setTreeData(data);
   }, [data]);
@@ -341,12 +350,10 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
 
   const expandAll = (rowInfo) => {
     expand(true);
-    handleRenderIcon(rowInfo);
   };
 
   const collapseAll = () => {
     expand(false);
-    handleRenderIcon();
   };
 
   // const alertNodeInfo = ({ node, path, treeIndex }) => {
@@ -401,7 +408,7 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
   };
 
   return (
-    <div className="ml-10">
+    <div className="lg:ml-16 md:ml-10">
       <HeaderSidebarManagement
         inputEl={inputEl}
         inputChildEl={inputChildEl}
@@ -434,7 +441,7 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
       >
         {!isLoading ? (
           <SortableTree
-            className=""
+            className="text-center mx-auto"
             treeData={treeData}
             onMoveNode={(treeData) => {
               setTreeDataUpdateAll(treeData.treeData);
@@ -460,6 +467,9 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
             }}
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
+            onVisibilityToggle={(e) => {
+              console.log("e", e);
+            }}
             generateNodeProps={(rowInfo) => {
               handleRenderIcon(rowInfo);
               return {
@@ -483,14 +493,14 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
                       <i className="fa-regular fa-pen-to-square"></i>
                     </button>
 
-                    <button
+                    {/* <button
                       id="updateIconEl"
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Update Icon"
                       onClick={(event) => handleOpenFormIcon(rowInfo)}
                     >
                       <i className="fa-solid fa-file-pen"></i>
-                    </button>
+                    </button> */}
 
                     <button
                       id="deleteEl"

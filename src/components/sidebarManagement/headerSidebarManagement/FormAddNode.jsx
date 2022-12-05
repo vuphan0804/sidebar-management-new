@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import icons from "../../../dataIcons/icons";
 import { toast } from "react-toastify";
@@ -19,6 +19,9 @@ const FormAddNode = ({
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
+
+  const titleRef = useRef();
+  const countRef = useRef();
 
   const handleChangeIcon = () => {
     setCheckedIcon(!checkedIcon);
@@ -61,6 +64,19 @@ const FormAddNode = ({
   }, [inputIconURL]);
 
   const callbackAddNodeNode = useCallback(async () => {
+    const titleValue = titleRef.current.value;
+    const countValue = countRef.current.value;
+
+    if (titleValue === "") {
+      titleRef.current.focus();
+      return;
+    }
+
+    if (countValue === "") {
+      countRef.current.focus();
+      return;
+    }
+
     const nodeAdd = {
       title: formValue.title,
       count: formValue.count,
@@ -89,9 +105,6 @@ const FormAddNode = ({
       setCheckedIcon(true);
     }
   }, [isOpenFormAddNode]);
-  console.log("form", formValue);
-
-  console.log("formValue Add Node", formValue);
 
   return (
     <div>
@@ -141,6 +154,7 @@ const FormAddNode = ({
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
+                      ref={titleRef}
                       type="text"
                       name="title"
                       id="title"
@@ -196,10 +210,12 @@ const FormAddNode = ({
                       Count
                     </label>
                     <input
+                      required={true}
                       value={formValue.count}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
+                      ref={countRef}
                       type="number"
                       name="count"
                       id="count"
