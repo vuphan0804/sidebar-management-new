@@ -26,8 +26,9 @@ const FormAddNodeChild = ({
   const handleChangeIcon = () => {
     setCheckedIcon(!checkedIcon);
   };
-  const handleChangeIconURL = (e) => {
-    setInputIconURL(e.target.value);
+  const handleChangeIconURL = (value) => {
+    setInputIconURL(value);
+    // setFormValue((prev) => ({ ...prev, icon: value }));
   };
 
   useEffect(() => {
@@ -138,7 +139,7 @@ const FormAddNodeChild = ({
                   Add node child
                 </h3>
                 <form className="grid grid-cols-2 gap-5" action="#">
-                  <div>
+                  <div className="">
                     <label
                       htmlFor="title"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -207,7 +208,7 @@ const FormAddNodeChild = ({
                       Count
                     </label>
                     <input
-                      valurequirede={formValue.count}
+                      value={formValue.count}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
@@ -296,10 +297,11 @@ const FormAddNodeChild = ({
                       Icon URL
                     </label>
                     <input
-                      onChange={(e) => handleChangeIconURL(e)}
+                      onChange={(e) => handleChangeIconURL(e.target.value)}
                       type="text"
                       name="iconURL"
                       id="iconURL"
+                      value={inputIconURL}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="iconURL"
                     />

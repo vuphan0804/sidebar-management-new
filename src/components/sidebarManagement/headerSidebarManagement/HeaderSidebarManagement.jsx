@@ -33,7 +33,6 @@ const HeaderSidebarManagement = ({
   const [addNodeChildSidebar, setAddNodeChildSidebar] =
     useState(selectedNodeParent);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
-
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
     setInput(selectedSidebar?.node?.title || "");

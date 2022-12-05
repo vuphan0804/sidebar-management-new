@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import icons from "../../../dataIcons/icons";
 import { toast } from "react-toastify";
-const FormManagement = ({
+const FormAddNode = ({
   isOpenFormAddNode,
   handleCloseFormAddNode,
   fetchSidebars,
@@ -89,6 +89,7 @@ const FormManagement = ({
       setCheckedIcon(true);
     }
   }, [isOpenFormAddNode]);
+  console.log("form", formValue);
 
   console.log("formValue Add Node", formValue);
 
@@ -128,7 +129,7 @@ const FormManagement = ({
                   Create node
                 </h3>
                 <form className="grid grid-cols-2 gap-5" action="#">
-                  <div>
+                  <div className="">
                     <label
                       htmlFor="title"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -336,4 +337,4 @@ const FormManagement = ({
   );
 };
 
-export default FormManagement;
+export default FormAddNode;

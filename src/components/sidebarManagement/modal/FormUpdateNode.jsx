@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import icons from "../../../dataIcons/icons";
 import { toast } from "react-toastify";
-const FormManagement = ({
+const FormUpdateNode = ({
   isOpenFormUpdate,
   handleCloseFormUpdate,
   selectedSidebar,
@@ -145,7 +145,7 @@ const FormManagement = ({
                   Update node
                 </h3>
                 <form className="grid grid-cols-2 gap-5" action="#">
-                  <div>
+                  <div className="">
                     <label
                       htmlFor="title"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -189,18 +189,29 @@ const FormManagement = ({
                       htmlFor="parentId"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
+<<<<<<< HEAD
                       parentId
                     </label>             
+=======
+                      Parent Node
+                    </label>
+>>>>>>> 3c55c9f6b943346cea1bffa5ebe141ca722818bc
                     <select
                       name="parentId"
                       id="parentId"
-                      className="w-32 h-10"
+                      className="w-full h-3/5 rounded-md border border-gray-300"
+                      label="Choose a parent"
+                      value={selectedSidebar.parentNode?.id}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
                     >
-                      {originalTreeData?.map((node) => {
-                        return <option value={node.id}>{node.title}</option>;
+                      {originalTreeData?.map((node, index) => {
+                        return (
+                          <option key={index} value={node.id}>
+                            {node.title}
+                          </option>
+                        );
                       })}
                     </select>
                   </div> */}
@@ -375,4 +386,4 @@ const FormManagement = ({
   );
 };
 
-export default FormManagement;
+export default FormUpdateNode;
