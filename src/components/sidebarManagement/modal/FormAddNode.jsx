@@ -11,7 +11,6 @@ const FormAddNode = ({
 }) => {
   const [formValue, setFormValue] = useState({
     title: "",
-    count: "",
     icon: "",
     parentId: "",
   });
@@ -65,21 +64,14 @@ const FormAddNode = ({
 
   const callbackAddNodeNode = useCallback(async () => {
     const titleValue = titleRef.current.value;
-    const countValue = countRef.current.value;
 
     if (titleValue === "") {
       titleRef.current.focus();
       return;
     }
 
-    if (countValue === "") {
-      countRef.current.focus();
-      return;
-    }
-
     const nodeAdd = {
       title: formValue.title,
-      count: formValue.count,
       icon: formValue.icon,
       parentId: formValue.parentId,
     };
@@ -98,7 +90,6 @@ const FormAddNode = ({
     if (!isOpenFormAddNode) {
       formValue.icon = "";
       formValue.title = "";
-      formValue.count = "";
       formValue.parentId = "";
       setInputIconLocal("");
       setInputIconURL("");
@@ -142,7 +133,7 @@ const FormAddNode = ({
                   Create node
                 </h3>
                 <form className="grid grid-cols-2 gap-5" action="#">
-                  <div className="">
+                  <div className="col-span-2">
                     <label
                       htmlFor="title"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -202,7 +193,7 @@ const FormAddNode = ({
                     />
                   </div> */}
 
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="count"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -222,7 +213,7 @@ const FormAddNode = ({
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="count"
                     />
-                  </div>
+                  </div> */}
                   {/* Icon local */}
                   <div>
                     <label

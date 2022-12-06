@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import { toast } from "react-toastify";
-import FormAddNode from "./FormAddNode";
+import FormAddNode from "../modal/FormAddNode";
 
 const HeaderSidebarManagement = ({
-  inputEl,
-  inputChildEl,
-  updateInputEl,
   updateNode,
-  createNode,
-  addNodeChild,
   expandAll,
   collapseAll,
   searchString,
@@ -25,22 +20,16 @@ const HeaderSidebarManagement = ({
   treeDataAddNode,
   treeDataAddNodeChild,
   treeDataRemoveNode,
-  selectedNodeParent,
+  isChangeTree,
 }) => {
   const [updateSidebar, setUpdateSidebar] = useState(selectedSidebar); //rowInfo
   const [input, setInput] = useState("");
   const [originalDataAll, setOriginalDataAll] = useState([]);
-  const [addNodeChildSidebar, setAddNodeChildSidebar] =
-    useState(selectedNodeParent);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
     setInput(selectedSidebar?.node?.title || "");
   }, [selectedSidebar]);
-
-  useEffect(() => {
-    setAddNodeChildSidebar(selectedNodeParent);
-  }, [selectedNodeParent]);
 
   useEffect(() => {
     setOriginalDataAll(deParseData(treeDataUpdateAll, []));
@@ -113,23 +102,6 @@ const HeaderSidebarManagement = ({
     if (originalDataAll) {
     }
   };
-
-  // const handleSaving = async () => {
-  //   const mockApiSideBars = await sidebarAPI.getSidebars();
-  //   const mockApiIds = mockApiSideBars.data.map((e) => e.id);
-  //   // Update sidebars
-  //   Promise.all(
-  //     originalDataUpdate
-  //       .then(() => showToastMessageSuccess())
-  //       .filter((e) => mockApiIds.includes(e.id))
-  //       .catch(() => showToastMessageError())
-  //       .map(async (e) => await sidebarAPI.updateSidebar(e.id, e))
-  //   )
-  //     .then((msgSuccess) => fetchSidebars())
-  //     .catch((error) => console.log("error", error));
-  //   setTreeDataUpdate([]);
-  //   console.log("mockApiIds", mockApiIds);
-  // };
 
   const callbackAddNode = useCallback(async () => {
     Promise.all(
@@ -272,8 +244,9 @@ const HeaderSidebarManagement = ({
         Collapse All
       </button>
       <button
+        disabled={isChangeTree}
         onClick={handleSaving}
-        className="p-2 px-4 m-2 bg-blue-200 rounded-md hover:bg-blue-400 transition-primary"
+        className="p-2 px-4 m-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-primary"
       >
         Save
       </button>

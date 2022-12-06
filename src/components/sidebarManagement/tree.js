@@ -16,47 +16,58 @@ import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
 import { toast } from "react-toastify";
 
 const Tree = ({ data, originalData, fetchSidebars }) => {
-  const [searchString, setSearchString] = useState("");
-  const [searchFocusIndex, setSearchFocusIndex] = useState(0);
-  const [searchFoundCount, setSearchFoundCount] = useState(null);
-  const [isOpenFormDelete, setIsOpenFormDelete] = useState(false);
-  const [isOpenPopupInfo, setIsOpenPopupInfo] = useState(false);
-  const [isOpenFormIcon, setIsOpenFormIcon] = useState(false);
-  const [treeData, setTreeData] = useState([]);
-  const [selectedSidebar, setSelectedSidebar] = useState(); // selected sidebar id to be updated
+  const [searchFocusIndex, setSearchFocusIndex] = useState(0),
+    [searchFoundCount, setSearchFoundCount] = useState(null),
+    [treeData, setTreeData] = useState([]),
+    [selectedSidebar, setSelectedSidebar] = useState(), // selected sidebar id to be updated
+    [treeDataUpdate, setTreeDataUpdate] = useState([]),
+    [treeDataUpdateAll, setTreeDataUpdateAll] = useState([]),
+    [treeDataUpdateNode, setTreeDataUpdateNode] = useState([]),
+    [treeDataUpdateIcon, setTreeDataUpdateIcon] = useState([]),
+    [treeDataAddNode, setTreeDataAddNode] = useState([]),
+    [treeDataAddNodeChild, setTreeDataAddNodeChild] = useState([]),
+    [treeDataRemoveNode, setTreeDataRemoveNode] = useState([]),
+    [rowInfoDelete, setRowInfoDelete] = useState([]),
+    [selectedNodeParent, setSelectedNodeParent] = useState([]),
+    [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]),
+    [popupInfo, setPopupInfo] = useState([]),
+    [rowInfoGenerate, setRowInfoGenerate] = useState([]),
+    [searchString, setSearchString] = useState(""),
+    [isGenerateNode, setIsGenerateNode] = useState(""),
+    [treeDataPrev, setTreeDataPrev] = useState([treeData]);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [treeDataUpdate, setTreeDataUpdate] = useState([]);
-  const [treeDataUpdateAll, setTreeDataUpdateAll] = useState([]);
-  const [treeDataUpdateNode, setTreeDataUpdateNode] = useState([]);
-  const [treeDataUpdateIcon, setTreeDataUpdateIcon] = useState([]);
-  const [treeDataAddNode, setTreeDataAddNode] = useState([]);
-  const [treeDataAddNodeChild, setTreeDataAddNodeChild] = useState([]);
-  const [treeDataRemoveNode, setTreeDataRemoveNode] = useState([]);
-  const [rowInfoDelete, setRowInfoDelete] = useState([]);
-  const [selectedNodeParent, setSelectedNodeParent] = useState([]);
-  const [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]);
-  const [isOpenFormUpdate, setIsOpenFormUpdate] = useState(false);
-  const [popupInfo, setPopupInfo] = useState([]);
-  const [isOpenFormAddNodeChild, setIsOpenFormAddNodeChild] = useState(false);
-  const [rowInfoGenerate, setRowInfoGenerate] = useState([]);
+
+  const [isOpenFormDelete, setIsOpenFormDelete] = useState(false),
+    [isOpenPopupInfo, setIsOpenPopupInfo] = useState(false),
+    [isOpenFormIcon, setIsOpenFormIcon] = useState(false),
+    [isOpenFormUpdate, setIsOpenFormUpdate] = useState(false),
+    [isOpenFormAddNodeChild, setIsOpenFormAddNodeChild] = useState(false),
+    [isChangeTree, setIsChangeTree] = useState(true);
 
   const inputEl = useRef();
-  const updateInputEl = useRef();
   const inputChildEl = useRef();
-  const getNodeKey = ({ treeIndex }) => console.log("treeIndex", treeIndex);
+  const getNodeKey = ({ treeIndex }) => treeIndex;
 
-  // if (treeIndex) {
-  //   const moveHandle = document.getElementsByClassName("rst__moveHandle");
-  //   if (moveHandle[rowInfo.treeIndex]) {
-  //     moveHandle[
-  //       rowInfo.treeIndex
-  //     ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
-  //     moveHandle[rowInfo.treeIndex].style.backgroundSize = `32px 32px`;
-  //   }
-  // }
   useEffect(() => {
     setTreeData(data);
   }, [data]);
+
+  useEffect(() => {
+    setTreeDataPrev(data);
+  }, [data]);
+
+  const compareArrays = (a, b) => {
+    return JSON.stringify(a) != JSON.stringify(b);
+  };
+
+  useEffect(() => {
+    if (compareArrays(treeDataPrev, treeData)) {
+      setIsChangeTree(false);
+    } else {
+      setIsChangeTree(true);
+    }
+  }, [treeData]);
 
   useEffect(() => {
     if (!treeData || treeData.length) {
@@ -68,71 +79,6 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
     } else setIsLoading(true);
   }, [treeData]);
 
-  // console.log("treeData", treeData);
-
-  // const moveHandle = document.getElementsByClassName("rst__moveHandle");
-  // if (originalData) {
-  //   for (let i = 0; i + 1 < originalData.length; i++) {
-  //     if (moveHandle[originalData[i].id]) {
-  //       moveHandle[
-  //         originalData[i].id
-  //       ].style.background = `#d9d9d9  url(${originalData[i].icon}) no-repeat center`;
-  //       moveHandle[originalData[i].id].style.backgroundSize = `32px 32px`;
-  //     }
-  //   }
-  // }
-
-  const handleOpenFormUpdate = (rowInfo) => {
-    setIsOpenFormUpdate(true);
-    setSelectedSidebar(rowInfo);
-  };
-
-  const handleCloseFormUpdate = () => {
-    setIsOpenFormUpdate(false);
-  };
-
-  const handleOpenFormDelete = (rowInfo) => {
-    setIsOpenFormDelete(true);
-    setRowInfoDelete(rowInfo);
-  };
-
-  const handleCloseFormDelete = () => {
-    setIsOpenFormDelete(false);
-  };
-
-  const handleOpenPopupInfo = (rowInfo) => {
-    setIsOpenPopupInfo(true);
-    setPopupInfo(rowInfo);
-  };
-
-  const handleClosePopupInfo = () => {
-    setIsOpenPopupInfo(false);
-  };
-
-  const handleOpenFormIcon = (rowInfo) => {
-    setIsOpenFormIcon(true);
-    setSelectedNodeUpdateIcon(rowInfo);
-  };
-
-  const handleCloseFormIcon = () => {
-    setIsOpenFormIcon(false);
-  };
-
-  const handleOpenFormAddNodeChild = (rowInfo) => {
-    setSelectedNodeParent(rowInfo);
-    setIsOpenFormAddNodeChild(true);
-  };
-
-  const handleCloseFormAddNodeChild = () => {
-    setIsOpenFormAddNodeChild(false);
-  };
-
-  // const moveHandle = document.getElementsByClassName("rst__moveHandle");
-  // if (moveHandle[rowInfoData.treeIndex]) {
-  //   moveHandle[
-  //     rowInfoData.treeIndex
-  //   ].style.background = `#d9d9d9  url(/img/${rowInfoData.node.icon}) no-repeat center`;
-  // }
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
       let x = {
@@ -325,13 +271,13 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
     arrRemoveNode.push(rowInfoDelete.node);
     const nodeRemove = deParseData(arrRemoveNode, []);
     setTreeDataRemoveNode(nodeRemove);
-    setTreeData(
-      removeNodeAtPath({
-        treeData,
-        path,
-        getNodeKey,
-      })
-    );
+    // setTreeData(
+    //   removeNodeAtPath({
+    //     treeData,
+    //     path,
+    //     getNodeKey,
+    //   })
+    // );
     handleCloseFormDelete();
   };
 
@@ -402,19 +348,60 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
         moveHandle[
           rowInfo.treeIndex
         ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
+
         moveHandle[rowInfo.treeIndex].style.backgroundSize = `32px 32px`;
       }
     }
   };
 
+  const handleOpenFormUpdate = (rowInfo) => {
+    setIsOpenFormUpdate(true);
+    setSelectedSidebar(rowInfo);
+  };
+
+  const handleCloseFormUpdate = () => {
+    setIsOpenFormUpdate(false);
+  };
+
+  const handleOpenFormDelete = (rowInfo) => {
+    setIsOpenFormDelete(true);
+    setRowInfoDelete(rowInfo);
+  };
+
+  const handleCloseFormDelete = () => {
+    setIsOpenFormDelete(false);
+  };
+
+  const handleOpenPopupInfo = (rowInfo) => {
+    setIsOpenPopupInfo(true);
+    setPopupInfo(rowInfo);
+  };
+
+  const handleClosePopupInfo = () => {
+    setIsOpenPopupInfo(false);
+  };
+
+  const handleOpenFormIcon = (rowInfo) => {
+    setIsOpenFormIcon(true);
+    setSelectedNodeUpdateIcon(rowInfo);
+  };
+
+  const handleCloseFormIcon = () => {
+    setIsOpenFormIcon(false);
+  };
+
+  const handleOpenFormAddNodeChild = (rowInfo) => {
+    setSelectedNodeParent(rowInfo);
+    setIsOpenFormAddNodeChild(true);
+  };
+
+  const handleCloseFormAddNodeChild = () => {
+    setIsOpenFormAddNodeChild(false);
+  };
+
   return (
     <div className="lg:ml-16 md:ml-10">
       <HeaderSidebarManagement
-        inputEl={inputEl}
-        inputChildEl={inputChildEl}
-        updateInputEl={updateInputEl}
-        createNode={createNode}
-        addNodeChild={addNodeChild}
         updateNode={updateNode}
         expandAll={expandAll}
         collapseAll={collapseAll}
@@ -424,7 +411,6 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
         selectNextMatch={selectNextMatch}
         selectPrevMatch={selectPrevMatch}
         searchFocusIndex={searchFocusIndex}
-        treeData={treeData}
         selectedSidebar={selectedSidebar}
         fetchSidebars={fetchSidebars}
         treeDataUpdate={treeDataUpdate}
@@ -435,6 +421,7 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
         treeDataAddNodeChild={treeDataAddNodeChild}
         selectedNodeParent={selectedNodeParent}
         setTreeDataUpdate={setTreeDataUpdate}
+        isChangeTree={isChangeTree}
       />
       <div
         style={{ height: "100vh", position: "relative", marginLeft: "20px" }}
@@ -467,11 +454,9 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
             }}
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
-            onVisibilityToggle={(e) => {
-              console.log("e", e);
-            }}
             generateNodeProps={(rowInfo) => {
               handleRenderIcon(rowInfo);
+              // setIsGenerateNode(true);
               return {
                 buttons: [
                   <div className="text-sm">

@@ -22,7 +22,6 @@ const FormUpdateNode = ({
   const [inputIconLocal, setInputIconLocal] = useState("");
 
   const titleRef = useRef();
-  const countRef = useRef();
 
   const handleChangeIcon = () => {
     setCheckedIcon(!checkedIcon);
@@ -72,17 +71,15 @@ const FormUpdateNode = ({
 
   const callbackUpdateNode = useCallback(async () => {
     const titleValue = titleRef.current.value;
-    const countValue = countRef.current.value;
 
     if (titleValue === "") {
       titleRef.current.focus();
       return;
     }
 
-    if (countValue === "") {
-      countRef.current.focus();
-      return;
+    if (formValue.icon === "") {
     }
+
     const nodeUpdate = {
       title: formValue.title,
       parentId: formValue.parentId,
@@ -146,7 +143,7 @@ const FormUpdateNode = ({
                   Update node
                 </h3>
                 <form className="grid grid-cols-2 gap-5" action="#">
-                  <div className="">
+                  <div className="col-span-2">
                     <label
                       htmlFor="title"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -213,7 +210,7 @@ const FormUpdateNode = ({
                     </select>
                   </div> */}
 
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="count"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -232,7 +229,7 @@ const FormUpdateNode = ({
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="count"
                     />
-                  </div>
+                  </div> */}
                   {/* Icon local */}
                   <div>
                     <label
