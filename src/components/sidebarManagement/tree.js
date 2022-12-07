@@ -15,7 +15,7 @@ import FormAddNodeChild from "./modal/FormAddNodeChild";
 import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
 import { toast } from "react-toastify";
 
-const Tree = ({ data, originalData, fetchSidebars }) => {
+const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0),
     [searchFoundCount, setSearchFoundCount] = useState(null),
     [treeData, setTreeData] = useState([]),
@@ -31,9 +31,7 @@ const Tree = ({ data, originalData, fetchSidebars }) => {
     [selectedNodeParent, setSelectedNodeParent] = useState([]),
     [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]),
     [popupInfo, setPopupInfo] = useState([]),
-    [rowInfoGenerate, setRowInfoGenerate] = useState([]),
     [searchString, setSearchString] = useState(""),
-    [isGenerateNode, setIsGenerateNode] = useState(""),
     [treeDataPrev, setTreeDataPrev] = useState([treeData]);
 
   const [isLoading, setIsLoading] = useState(true);

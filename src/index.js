@@ -15,6 +15,8 @@ import ScrollButton from "./components/scrollToTop/ScrollButton";
 const App = () => {
   const [treeData, setTreeData] = useState([]);
   const [treeDataParse, setTreeDataParse] = useState([]);
+  const [rowInfoGenerate, setRowInfoGenerate] = useState([]);
+
   const fetchSidebars = async () => {
     try {
       const { data } = await sidebarAPI.getSidebars();
@@ -83,6 +85,8 @@ const App = () => {
               fetchSidebars={fetchSidebars}
               originalData={treeData}
               data={treeDataParse}
+              rowInfoGenerate={rowInfoGenerate}
+              setRowInfoGenerate={setRowInfoGenerate}
             />
           </div>
         </div>
