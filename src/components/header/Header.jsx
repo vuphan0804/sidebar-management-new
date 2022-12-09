@@ -15,6 +15,7 @@ const Header = () => {
     const fixedClass = window.scrollY >= 100 ? "!h-16" : "";
     setHeaderFixed(fixedClass);
   };
+
   return (
     <div
       className={`h-20 w-full z-10 text-white bg-slate-500 flex items-center justify-around fixed transition-primary ${headerFixed}`}

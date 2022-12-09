@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import icons from "../../../dataIcons/icons";
-import { toast } from "react-toastify";
+
 const FormAddNode = ({
   isOpenFormAddNode,
   handleCloseFormAddNode,
@@ -10,7 +10,7 @@ const FormAddNode = ({
   showToastMessageError,
 }) => {
   const [formValue, setFormValue] = useState({
-    title: "",
+    name: "",
     icon: "",
     parentId: "",
   });
@@ -20,47 +20,6 @@ const FormAddNode = ({
   const [inputIconLocal, setInputIconLocal] = useState("");
 
   const titleRef = useRef();
-  const countRef = useRef();
-
-  const handleChangeIcon = () => {
-    setCheckedIcon(!checkedIcon);
-  };
-  const handleChangeIconURL = (value) => {
-    setInputIconURL(value);
-  };
-
-  const handleChange = (name, value) => {
-    setFormValue((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  };
-  useEffect(() => {
-    if (!checkedIcon) {
-      setFormValue((prev) => ({
-        ...prev,
-        icon: inputIconURL,
-      }));
-      setIsDisabledIconLocal(true);
-    } else {
-      setFormValue((prev) => ({
-        ...prev,
-        icon: inputIconLocal,
-      }));
-      setIsDisabledIconLocal(false);
-    }
-  }, [checkedIcon]);
-
-  useEffect(() => {
-    if (!checkedIcon) {
-      setFormValue((prev) => ({
-        ...prev,
-        icon: inputIconURL,
-      }));
-    }
-  }, [inputIconURL]);
 
   const callbackAddNodeNode = useCallback(async () => {
     const titleValue = titleRef.current.value;
@@ -87,6 +46,31 @@ const FormAddNode = ({
   }, [formValue]);
 
   useEffect(() => {
+    if (!checkedIcon) {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconURL,
+      }));
+      setIsDisabledIconLocal(true);
+    } else {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconLocal,
+      }));
+      setIsDisabledIconLocal(false);
+    }
+  }, [checkedIcon]);
+
+  useEffect(() => {
+    if (!checkedIcon) {
+      setFormValue((prev) => ({
+        ...prev,
+        icon: inputIconURL,
+      }));
+    }
+  }, [inputIconURL]);
+
+  useEffect(() => {
     if (!isOpenFormAddNode) {
       formValue.icon = "";
       formValue.title = "";
@@ -96,6 +80,22 @@ const FormAddNode = ({
       setCheckedIcon(true);
     }
   }, [isOpenFormAddNode]);
+
+  const handleChangeIcon = () => {
+    setCheckedIcon(!checkedIcon);
+  };
+  const handleChangeIconURL = (value) => {
+    setInputIconURL(value);
+  };
+
+  const handleChange = (name, value) => {
+    setFormValue((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
 
   return (
     <div>
@@ -153,67 +153,6 @@ const FormAddNode = ({
                       placeholder="title"
                     />
                   </div>
-                  {/* <div>
-                    <label
-                      htmlFor="id"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      ID Node
-                    </label>
-                    <input
-                      value={formValue.id}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="number"
-                      name="id"
-                      id="id"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Id Node"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="parentId"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      parentId
-                    </label>
-                    <input
-                      disabled
-                      value={formValue.parentId}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="text"
-                      name="parentId"
-                      id="parentId"
-                      className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Empty is parent node"
-                    />
-                  </div> */}
-
-                  {/* <div>
-                    <label
-                      htmlFor="count"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Count
-                    </label>
-                    <input
-                      required={true}
-                      value={formValue.count}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      ref={countRef}
-                      type="number"
-                      name="count"
-                      id="count"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="count"
-                    />
-                  </div> */}
                   {/* Icon local */}
                   <div>
                     <label

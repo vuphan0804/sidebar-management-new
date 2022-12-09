@@ -8,19 +8,21 @@ import {
   useProSidebar,
 } from "react-pro-sidebar";
 import { FiHome, FiMenu, FiPackage, FiChevronsRight } from "react-icons/fi";
-import "./SidebarMain.scss";
 import Marquee from "react-fast-marquee";
+import "./SidebarMain.scss";
 
-const SidebarMain = ({ data, fetchSidebars }) => {
+const SidebarMain = ({ data }) => {
   const { collapseSidebar } = useProSidebar();
   const [treeData, setTreeData] = useState([]);
   const [start, setStart] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
   const [collapse, setCollapse] = useState(false);
 
-  const getSize = () => {
-    setWidth(window.innerWidth);
-  };
+  useEffect(() => {
+    setTreeData(data);
+  }, [data]);
+
+  console.log("treeData", treeData);
 
   useEffect(() => {
     window.addEventListener("resize", getSize);
@@ -34,15 +36,17 @@ const SidebarMain = ({ data, fetchSidebars }) => {
     };
   }, [window.innerWidth]);
 
+  const getSize = () => {
+    setWidth(window.innerWidth);
+  };
+
   const handleStartMarquee = () => {
     setStart(true);
   };
+
   const handleStopMarquee = () => {
     setStart(false);
   };
-  useEffect(() => {
-    setTreeData(data);
-  }, [data]);
 
   const renderSidebar = (treeData) => {
     return treeData?.map((parent, index) => {
@@ -80,7 +84,7 @@ const SidebarMain = ({ data, fetchSidebars }) => {
             routerLink={<Link to="/" />}
             icon={<FiHome />}
           >
-            Trang chủ
+            Home
           </MenuItem>
           {renderSidebar(treeData)}
         </Menu>

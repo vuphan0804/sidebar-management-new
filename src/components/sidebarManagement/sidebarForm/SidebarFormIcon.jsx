@@ -15,25 +15,6 @@ const SidebarFormIcon = ({
   const [updateIconSelected, setUpdateIconSelected] = useState(
     selectedNodeUpdateIcon
   );
-  useEffect(() => {
-    callbackUpdateIcon();
-  }, [treeDataUpdateIcon]);
-  useEffect(() => {
-    setUpdateIconSelected(selectedNodeUpdateIcon);
-    setSelectedIcon(selectedNodeUpdateIcon?.node?.icon || "");
-  }, [selectedNodeUpdateIcon]);
-
-  const showToastMessageSuccess = (msg = "Success") => {
-    toast.success(msg, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  const showToastMessageError = (msg = "Error") => {
-    toast.error(msg, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
 
   const callbackUpdateIcon = useCallback(async () => {
     const nodeUpdateIcon = {
@@ -53,6 +34,28 @@ const SidebarFormIcon = ({
         .catch((error) => console.log("error", error));
     }
   }, [treeDataUpdateIcon]);
+
+  useEffect(() => {
+    callbackUpdateIcon();
+  }, [treeDataUpdateIcon]);
+
+  useEffect(() => {
+    setUpdateIconSelected(selectedNodeUpdateIcon);
+    setSelectedIcon(selectedNodeUpdateIcon?.node?.icon || "");
+  }, [selectedNodeUpdateIcon]);
+
+  const showToastMessageSuccess = (msg = "Success") => {
+    toast.success(msg, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const showToastMessageError = (msg = "Error") => {
+    toast.error(msg, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   const updateIconHandler = async () => {
     if (updateIconSelected) {
       updateIcon(updateIconSelected, selectedIcon);

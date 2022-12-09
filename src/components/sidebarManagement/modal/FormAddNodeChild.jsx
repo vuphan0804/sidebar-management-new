@@ -10,7 +10,6 @@ const FormAddNodeChild = ({
   showToastMessageSuccess,
   showToastMessageError,
 }) => {
-  const [addNodeChild, setAddNodeChild] = useState(selectedNodeParent);
   const [formValue, setFormValue] = useState({
     title: "",
     parentId: "",
@@ -22,25 +21,39 @@ const FormAddNodeChild = ({
   const [inputIconLocal, setInputIconLocal] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
   const titleRef = useRef();
-  const countRef = useRef();
 
-  const handleChangeIcon = () => {
-    setCheckedIcon(!checkedIcon);
-  };
-  const handleChangeIconURL = (value) => {
-    setInputIconURL(value);
-    // setFormValue((prev) => ({ ...prev, icon: value }));
-  };
+  const callbackAddNodeChild = useCallback(async () => {
+    const titleValue = titleRef.current.value;
+    if (titleValue === "") {
+      titleRef.current.focus();
+      return;
+    }
+
+    const addNodeChild = {
+      title: formValue.title,
+      parentId: formValue.parentId,
+      icon: formValue.icon,
+    };
+    if (addNodeChild) {
+      await sidebarAPI
+        .addSidebar(addNodeChild)
+        .then(() => showToastMessageSuccess("Add node child successfully!"))
+        .then((msgSuccess) => fetchSidebars())
+        .catch(() => showToastMessageError("Add node child error!"))
+        .catch((error) => console.log("error", error));
+    }
+    handleCloseFormAddNodeChild();
+  }, [formValue]);
 
   useEffect(() => {
     if (selectedNodeParent) {
-      setAddNodeChild(selectedNodeParent);
       setFormValue((prev) => ({
         ...prev,
         parentId: selectedNodeParent.node?.id,
       }));
     }
   }, [selectedNodeParent]);
+
   useEffect(() => {
     if (!checkedIcon) {
       setFormValue((prev) => ({
@@ -66,37 +79,6 @@ const FormAddNodeChild = ({
     }
   }, [inputIconURL]);
 
-  const handleChange = (name, value) => {
-    setFormValue((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  };
-  const callbackAddNodeChild = useCallback(async () => {
-    const titleValue = titleRef.current.value;
-    if (titleValue === "") {
-      titleRef.current.focus();
-      return;
-    }
-
-    const addNodeChild = {
-      title: formValue.title,
-      parentId: formValue.parentId,
-      icon: formValue.icon,
-    };
-    if (addNodeChild) {
-      await sidebarAPI
-        .addSidebar(addNodeChild)
-        .then(() => showToastMessageSuccess("Add node child successfully!"))
-        .then((msgSuccess) => fetchSidebars())
-        .catch(() => showToastMessageError("Add node child error!"))
-        .catch((error) => console.log("error", error));
-    }
-    handleCloseFormAddNodeChild();
-  }, [formValue]);
-
   useEffect(() => {
     if (!isOpenFormAddNodeChild) {
       formValue.icon = "";
@@ -107,6 +89,23 @@ const FormAddNodeChild = ({
       setCheckedIcon(true);
     }
   }, [isOpenFormAddNodeChild]);
+
+  const handleChange = (name, value) => {
+    setFormValue((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleChangeIcon = () => {
+    setCheckedIcon(!checkedIcon);
+  };
+
+  const handleChangeIconURL = (value) => {
+    setInputIconURL(value);
+  };
 
   return (
     <div>
@@ -165,67 +164,7 @@ const FormAddNodeChild = ({
                       placeholder="title"
                     />
                   </div>
-                  {/* <div>
-                    <label
-                      htmlFor="id"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      ID Node
-                    </label>
-                    <input
-                      required
-                      value={formValue.id}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="number"
-                      name="id"
-                      id="id"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Id Node"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="parentId"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      parentId
-                    </label>
-                    <input
-                      disabled
-                      value={formValue.parentId}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="text"
-                      name="parentId"
-                      id="parentId"
-                      className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Empty is parent node"
-                    />
-                  </div> */}
 
-                  {/* <div>
-                    <label
-                      htmlFor="count"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Count
-                    </label>
-                    <input
-                      value={formValue.count}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      ref={countRef}
-                      type="number"
-                      name="count"
-                      id="count"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="count"
-                    />
-                  </div> */}
                   {/* Icon local */}
                   <div>
                     <label

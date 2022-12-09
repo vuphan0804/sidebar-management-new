@@ -21,113 +21,12 @@ const HeaderSidebarManagement = ({
   treeDataAddNodeChild,
   treeDataRemoveNode,
   isChangeTree,
+  deParseData,
 }) => {
   const [updateSidebar, setUpdateSidebar] = useState(selectedSidebar); //rowInfo
   const [input, setInput] = useState("");
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
-  useEffect(() => {
-    setUpdateSidebar(selectedSidebar);
-    setInput(selectedSidebar?.node?.title || "");
-  }, [selectedSidebar]);
-
-  useEffect(() => {
-    setOriginalDataAll(deParseData(treeDataUpdateAll, []));
-  }, [treeDataUpdateAll]);
-  // useEffect(() => {
-  //   setOriginalDataUpdate(deParseData(treeDataUpdate, []));
-  // }, [treeDataUpdate]);
-
-  //  Add Node
-  useEffect(() => {
-    callbackAddNode();
-  }, [treeDataAddNode]);
-  // Add Node Child
-  useEffect(() => {
-    callbackAddNodeChild();
-  }, [treeDataAddNodeChild]);
-  // Update Node
-  useEffect(() => {
-    callbackUpdateNode();
-  }, [treeDataUpdateNode]);
-  // Remove Node
-  useEffect(() => {
-    callbackRemoveNode();
-  }, [treeDataRemoveNode]);
-
-  const showToastMessageSuccess = (msg = "Success") => {
-    toast.success(msg, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  const showToastMessageError = (msg = "Error") => {
-    toast.error(msg, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  // Transfer Data
-  const deParseData = (treeData, data) => {
-    treeData?.forEach((parent, index) => {
-      let x = {
-        title: parent.title,
-        expanded: parent.expanded,
-        parentId: parent.parentId,
-        icon: parent.icon,
-        id: parent.id,
-        count: index + 1,
-      };
-      data.push(x);
-      if (parent.children && parent.children.length > 0) {
-        deParseData(parent.children, data);
-      }
-    });
-    return data;
-  };
-  const handleSaving = async () => {
-    const mockApiSideBars = await sidebarAPI.getSidebars();
-    const mockApiIds = mockApiSideBars.data.map((e) => e.id);
-    // Update sidebars
-
-    Promise.all(
-      originalDataAll
-        .filter((e) => mockApiIds.includes(e.id))
-        .map(async (e) => await sidebarAPI.updateSidebar(e.id, e))
-    )
-      .then(() => showToastMessageSuccess("Save successfully!"))
-      .then((msgSuccess) => fetchSidebars())
-      .catch(() => showToastMessageError("Save error!"))
-      .catch((error) => console.log("error", error));
-    if (originalDataAll) {
-    }
-  };
-
-  const callbackAddNode = useCallback(async () => {
-    Promise.all(
-      treeDataAddNode.map(async (e) => await sidebarAPI.addSidebar(e))
-    )
-      // .then(() => showToastMessageSuccess("Add node successfully!"))
-      .then((msgSuccess) => fetchSidebars())
-      .catch(() => showToastMessageError("Add node error!"))
-      .catch((error) => console.log("error", error));
-  }, [treeDataAddNode]);
-
-  const callbackAddNodeChild = useCallback(async () => {
-    Promise.all(
-      treeDataAddNodeChild.map(async (e) => await sidebarAPI.addSidebar(e))
-    )
-      // .then(() => showToastMessageSuccess("Add node child successfully!"))
-      .then((msgSuccess) => fetchSidebars())
-      .catch(() => showToastMessageError("Add node child error!"))
-      .catch((error) => console.log("error", error));
-  }, [treeDataAddNodeChild]);
-
-  const updateHandler = async () => {
-    if (updateSidebar) {
-      updateNode(updateSidebar, input);
-    }
-  };
 
   const callbackUpdateNode = useCallback(async () => {
     const nodeUpdate = {
@@ -161,6 +60,95 @@ const HeaderSidebarManagement = ({
     }
   }, [treeDataRemoveNode]);
 
+  const callbackAddNode = useCallback(async () => {
+    Promise.all(
+      treeDataAddNode.map(async (e) => await sidebarAPI.addSidebar(e))
+    )
+      // .then(() => showToastMessageSuccess("Add node successfully!"))
+      .then((msgSuccess) => fetchSidebars())
+      .catch(() => showToastMessageError("Add node error!"))
+      .catch((error) => console.log("error", error));
+  }, [treeDataAddNode]);
+
+  const callbackAddNodeChild = useCallback(async () => {
+    Promise.all(
+      treeDataAddNodeChild.map(async (e) => await sidebarAPI.addSidebar(e))
+    )
+      // .then(() => showToastMessageSuccess("Add node child successfully!"))
+      .then((msgSuccess) => fetchSidebars())
+      .catch(() => showToastMessageError("Add node child error!"))
+      .catch((error) => console.log("error", error));
+  }, [treeDataAddNodeChild]);
+
+  useEffect(() => {
+    setUpdateSidebar(selectedSidebar);
+    setInput(selectedSidebar?.node?.title || "");
+  }, [selectedSidebar]);
+
+  useEffect(() => {
+    setOriginalDataAll(deParseData(treeDataUpdateAll, []));
+  }, [treeDataUpdateAll]);
+
+  // useEffect(() => {
+  //   setOriginalDataUpdate(deParseData(treeDataUpdate, []));
+  // }, [treeDataUpdate]);
+
+  //  Add Node
+  useEffect(() => {
+    callbackAddNode();
+  }, [treeDataAddNode]);
+
+  // Add Node Child
+  useEffect(() => {
+    callbackAddNodeChild();
+  }, [treeDataAddNodeChild]);
+
+  // Update Node
+  useEffect(() => {
+    callbackUpdateNode();
+  }, [treeDataUpdateNode]);
+
+  // Remove Node
+  useEffect(() => {
+    callbackRemoveNode();
+  }, [treeDataRemoveNode]);
+
+  const showToastMessageSuccess = (msg = "Success") => {
+    toast.success(msg, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const showToastMessageError = (msg = "Error") => {
+    toast.error(msg, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  // Transfer Data
+  const handleSaving = async () => {
+    const mockApiSideBars = await sidebarAPI.getSidebars();
+    const mockApiIds = mockApiSideBars.data.map((e) => e.id);
+    // Update sidebars
+
+    Promise.all(
+      originalDataAll
+        .filter((e) => mockApiIds.includes(e.id))
+        .map(async (e) => await sidebarAPI.updateSidebar(e.id, e))
+    )
+      .then(() => showToastMessageSuccess("Save successfully!"))
+      .then((msgSuccess) => fetchSidebars())
+      .catch(() => showToastMessageError("Save error!"))
+      .catch((error) => console.log("error", error));
+    console.log("originalDataAll", originalDataAll);
+  };
+
+  const updateHandler = async () => {
+    if (updateSidebar) {
+      updateNode(updateSidebar, input);
+    }
+  };
+
   const reloadPage = () => {
     window.location.reload();
   };
@@ -168,6 +156,7 @@ const HeaderSidebarManagement = ({
   const handleOpenFormAddNode = () => {
     setIsOpenFormAddNode(true);
   };
+
   const handleCloseFormAddNode = () => {
     setIsOpenFormAddNode(false);
   };
@@ -243,13 +232,21 @@ const HeaderSidebarManagement = ({
       >
         Collapse All
       </button>
-      <button
-        disabled={isChangeTree}
-        onClick={handleSaving}
-        className="p-2 px-4 m-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-primary"
-      >
-        Save
-      </button>
+      {isChangeTree ? (
+        <button
+          disabled={isChangeTree}
+          className="p-2 px-4 m-2 text-white bg-blue-400 rounded-md transition-primary"
+        >
+          Save
+        </button>
+      ) : (
+        <button
+          onClick={handleSaving}
+          className="p-2 px-4 m-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-primary"
+        >
+          Save
+        </button>
+      )}
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <form
         style={{ display: "inline-block" }}

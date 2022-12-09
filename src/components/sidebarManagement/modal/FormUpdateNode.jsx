@@ -10,7 +10,7 @@ const FormUpdateNode = ({
   showToastMessageError,
 }) => {
   const [formValue, setFormValue] = useState({
-    title: "",
+    name: "",
     id: "",
     parentId: "",
     count: "",
@@ -23,12 +23,35 @@ const FormUpdateNode = ({
 
   const titleRef = useRef();
 
-  const handleChangeIcon = () => {
-    setCheckedIcon(!checkedIcon);
-  };
-  const handleChangeIconURL = (value) => {
-    setInputIconURL(value);
-  };
+  const callbackUpdateNode = useCallback(async () => {
+    const titleValue = titleRef.current.value;
+
+    if (titleValue === "") {
+      titleRef.current.focus();
+      return;
+    }
+
+    if (formValue.icon === "") {
+    }
+
+    const nodeUpdate = {
+      title: formValue.name,
+      parentId: formValue.parentId,
+      id: formValue.id,
+      count: formValue.count,
+      icon: formValue.icon,
+    };
+
+    if (nodeUpdate.id) {
+      await sidebarAPI
+        .updateSidebar(nodeUpdate.id, nodeUpdate)
+        .then(() => showToastMessageSuccess("Update node successfully!"))
+        .then((msgSuccess) => fetchSidebars())
+        .catch(() => showToastMessageError("Update node error!"))
+        .catch((error) => console.log("error", error));
+    }
+    handleCloseFormUpdate();
+  }, [formValue]);
 
   useEffect(() => {
     if (selectedSidebar) {
@@ -36,14 +59,6 @@ const FormUpdateNode = ({
     }
   }, [selectedSidebar]);
 
-  const handleChange = (name, value) => {
-    setFormValue((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  };
   useEffect(() => {
     if (!checkedIcon) {
       setFormValue((prev) => ({
@@ -69,36 +84,6 @@ const FormUpdateNode = ({
     }
   }, [inputIconURL]);
 
-  const callbackUpdateNode = useCallback(async () => {
-    const titleValue = titleRef.current.value;
-
-    if (titleValue === "") {
-      titleRef.current.focus();
-      return;
-    }
-
-    if (formValue.icon === "") {
-    }
-
-    const nodeUpdate = {
-      title: formValue.title,
-      parentId: formValue.parentId,
-      id: formValue.id,
-      count: formValue.count,
-      icon: formValue.icon,
-    };
-
-    if (nodeUpdate.id) {
-      await sidebarAPI
-        .updateSidebar(nodeUpdate.id, nodeUpdate)
-        .then(() => showToastMessageSuccess("Update node successfully!"))
-        .then((msgSuccess) => fetchSidebars())
-        .catch(() => showToastMessageError("Update node error!"))
-        .catch((error) => console.log("error", error));
-    }
-    handleCloseFormUpdate();
-  }, [formValue]);
-
   useEffect(() => {
     if (!isOpenFormUpdate) {
       setInputIconURL("");
@@ -106,6 +91,23 @@ const FormUpdateNode = ({
       setCheckedIcon(true);
     }
   }, [isOpenFormUpdate]);
+
+  const handleChange = (name, value) => {
+    setFormValue((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleChangeIcon = () => {
+    setCheckedIcon(!checkedIcon);
+  };
+
+  const handleChangeIconURL = (value) => {
+    setInputIconURL(value);
+  };
 
   return (
     <div>
@@ -151,85 +153,18 @@ const FormUpdateNode = ({
                       Title
                     </label>
                     <input
-                      value={formValue.title}
+                      value={formValue.name}
                       onChange={(e) => {
                         handleChange(e.target.name, e.target.value);
                       }}
                       ref={titleRef}
                       type="text"
-                      name="title"
+                      name="name"
                       id="title"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="title"
                     />
                   </div>
-                  {/* <div>
-                    <label
-                      htmlFor="id"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      ID Node
-                    </label>
-                    <input
-                      disabled={true}
-                      value={formValue.id}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      type="number"
-                      name="id"
-                      id="id"
-                      className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Id Node"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="parentId"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      parentId
-                    </label>             
-                    <select
-                      name="parentId"
-                      id="parentId"
-                      className="w-full h-3/5 rounded-md border border-gray-300"
-                      label="Choose a parent"
-                      value={selectedSidebar.parentNode?.id}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                    >
-                      {originalTreeData?.map((node, index) => {
-                        return (
-                          <option key={index} value={node.id}>
-                            {node.title}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div> */}
-
-                  {/* <div>
-                    <label
-                      htmlFor="count"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Count
-                    </label>
-                    <input
-                      value={formValue.count}
-                      onChange={(e) => {
-                        handleChange(e.target.name, e.target.value);
-                      }}
-                      ref={countRef}
-                      type="number"
-                      name="count"
-                      id="count"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="count"
-                    />
-                  </div> */}
                   {/* Icon local */}
                   <div>
                     <label
@@ -351,6 +286,41 @@ const FormUpdateNode = ({
                         />
                       </button>
                     ) : null}
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <input className="mr-2" type="checkbox" name="" id="" />
+                      Add child node
+                      <button
+                        id="addChildNodeBtn"
+                        className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                        label="Add Child"
+                      >
+                        <i className="fa-solid fa-plus"></i>
+                      </button>
+                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <input className="mr-2" type="checkbox" name="" id="" />
+                      Remove node
+                      <button
+                        id="deleteNodeBtn"
+                        className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                        label="Delete"
+                      >
+                        <i className="fa-sharp fa-solid fa-trash"></i>
+                      </button>
+                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <input className="mr-2" type="checkbox" name="" id="" />
+                      Information node
+                      <button
+                        id="InfoNodeBtn"
+                        className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                        label="Info"
+                      >
+                        <i className="fa-sharp fa-solid fa-circle-info"></i>
+                      </button>
+                    </label>
                   </div>
                 </form>
                 <div className="text-end mt-5">

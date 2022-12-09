@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath,
@@ -6,6 +6,7 @@ import SortableTree, {
   toggleExpandedForAll,
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css";
+import _ from "lodash";
 import Loading from "../loading/Loading";
 import HeaderSidebarManagement from "./headerSidebarManagement/HeaderSidebarManagement";
 import SidebarFormDelete from "./sidebarForm/SidebarFormDelete.jsx";
@@ -14,8 +15,9 @@ import FormUpdateNode from "./modal/FormUpdateNode";
 import FormAddNodeChild from "./modal/FormAddNodeChild";
 import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
 import { toast } from "react-toastify";
+import { useRef } from "react";
 
-const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
+const Tree = ({ data, fetchSidebars, originalData }) => {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0),
     [searchFoundCount, setSearchFoundCount] = useState(null),
     [treeData, setTreeData] = useState([]),
@@ -32,7 +34,8 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]),
     [popupInfo, setPopupInfo] = useState([]),
     [searchString, setSearchString] = useState(""),
-    [treeDataPrev, setTreeDataPrev] = useState([treeData]);
+    [treeDataPrev, setTreeDataPrev] = useState([treeData]),
+    [rowInfoGenerate, setRowInfoGenerate] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,22 +45,31 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     [isOpenFormUpdate, setIsOpenFormUpdate] = useState(false),
     [isOpenFormAddNodeChild, setIsOpenFormAddNodeChild] = useState(false),
     [isChangeTree, setIsChangeTree] = useState(true);
-
-  const inputEl = useRef();
-  const inputChildEl = useRef();
+  const listRowinfo = useRef();
   const getNodeKey = ({ treeIndex }) => treeIndex;
 
+  // useEffect(() => {
+  //   setTreeData(data);
+  // }, [data]);
+
   useEffect(() => {
-    setTreeData(data);
-  }, [data]);
+    const parentArr = _.sortBy(
+      originalData,
+      (obj) => parseInt(obj.count),
+      10
+    ).filter((a) => a.parentId === "");
+    const childArr = _.sortBy(
+      originalData,
+      (obj) => parseInt(obj.count),
+      10
+    ).filter((a) => a.parentId !== "");
+    setTreeData(parseData(parentArr, childArr));
+  }, [originalData]);
+  console.log("list", listRowinfo.current);
 
   useEffect(() => {
     setTreeDataPrev(data);
   }, [data]);
-
-  const compareArrays = (a, b) => {
-    return JSON.stringify(a) != JSON.stringify(b);
-  };
 
   useEffect(() => {
     if (compareArrays(treeDataPrev, treeData)) {
@@ -77,10 +89,108 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     } else setIsLoading(true);
   }, [treeData]);
 
+  const compareArrays = (a, b) => {
+    return JSON.stringify(a) != JSON.stringify(b);
+  };
+
+  const parseData = (dataParse, childArr) => {
+    dataParse.forEach((parent) => {
+      let childHaveChild = [];
+      let childOnly = [];
+      parent.name = parent.isName ? parent.name : parent.title;
+      parent.title = (
+        <div className="flex items-center">
+          <div>{parent.name}</div>
+          <div className="ml-10">
+            {parent.isAddNodeChild ? (
+              <button
+                id="addChildEl"
+                className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                label="Add Child"
+                onClick={(event) => handleOpenFormAddNodeChild(parent.id)}
+              >
+                <i className="fa-solid fa-plus"></i>
+              </button>
+            ) : null}
+
+            {parent.isRemoveNode ? (
+              <button
+                id="deleteEl"
+                className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                label="Delete"
+              >
+                <i className="fa-sharp fa-solid fa-trash"></i>
+              </button>
+            ) : null}
+
+            {parent.isInfo ? (
+              <button
+                className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                label="Alert"
+              >
+                <i className="fa-sharp fa-solid fa-circle-info"></i>
+              </button>
+            ) : null}
+          </div>
+        </div>
+      );
+      parent.isName = true;
+      childArr.forEach((child) => {
+        child.name = child.title;
+        if (child.parentId == parent.id) {
+          child.title = (
+            <div className="flex items-center">
+              <div>{child.name}</div>
+              <div className="ml-10">
+                {child.isAddNodeChild ? (
+                  <button
+                    id="addChildEl"
+                    className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Add Child"
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                ) : null}
+
+                {child.isRemoveNode ? (
+                  <button
+                    id="deleteEl"
+                    className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                    label="Delete"
+                  >
+                    <i className="fa-sharp fa-solid fa-trash"></i>
+                  </button>
+                ) : null}
+
+                {child.isInfo ? (
+                  <button
+                    className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Alert"
+                  >
+                    <i className="fa-sharp fa-solid fa-circle-info"></i>
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          );
+          child.isName = true;
+          childHaveChild.push(child);
+        } else childOnly.push(child);
+      });
+      parent.children = childHaveChild;
+      if (parent.children.length > 0) {
+        return parseData(parent.children, childOnly);
+      }
+    });
+    return dataParse;
+  };
+  useEffect(() => {
+    listRowinfo.current = [];
+  }, []);
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
       let x = {
-        title: parent.title,
+        title: parent.name,
         expanded: parent.expanded,
         parentId: parent.parentId,
         id: parent.id,
@@ -95,37 +205,37 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     return data;
   };
 
-  const createNode = () => {
-    const value = inputEl.current.value;
+  // const createNode = () => {
+  //   const value = inputEl.current.value;
 
-    if (value === "") {
-      inputEl.current.focus();
-      return;
-    }
-    let addNodes = [];
-    addNodes.push({
-      parentId: "",
-      title: value,
-      expanded: true,
-      icon: "menu.png",
-    });
-    let newTree = addNodeUnderParent({
-      treeData: treeData,
-      parentKey: "",
-      expandParent: true,
-      getNodeKey,
-      newNode: {
-        parentId: "",
-        title: value,
-        expanded: true,
-        icon: "menu.png",
-      },
-    });
-    setTreeDataAddNode(addNodes);
-    setTreeData(newTree.treeData);
-    // handleOpenForm();
-    inputEl.current.value = "";
-  };
+  //   if (value === "") {
+  //     inputEl.current.focus();
+  //     return;
+  //   }
+  //   let addNodes = [];
+  //   addNodes.push({
+  //     parentId: "",
+  //     title: value,
+  //     expanded: true,
+  //     icon: "menu.png",
+  //   });
+  //   let newTree = addNodeUnderParent({
+  //     treeData: treeData,
+  //     parentKey: "",
+  //     expandParent: true,
+  //     getNodeKey,
+  //     newNode: {
+  //       parentId: "",
+  //       title: value,
+  //       expanded: true,
+  //       icon: "menu.png",
+  //     },
+  //   });
+  //   setTreeDataAddNode(addNodes);
+  //   setTreeData(newTree.treeData);
+  //   // handleOpenForm();
+  //   inputEl.current.value = "";
+  // };
 
   // const selectedAddNodeChild = (rowInfo) => {
   //   let { node, path } = rowInfo;
@@ -135,33 +245,33 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
   //   inputChildEl.current.focus();
   // };
 
-  const addNodeChild = () => {
-    const value = inputChildEl.current.value;
+  // const addNodeChild = () => {
+  //   const value = inputChildEl.current.value;
 
-    let addNodeChild = [];
+  //   let addNodeChild = [];
 
-    addNodeChild.push({
-      parentId: selectedNodeParent.node.id,
-      title: value,
-      expanded: true,
-      icon: "menu.png",
-    });
-    let newTree = addNodeUnderParent({
-      treeData: treeData,
-      parentKey: selectedNodeParent.path[selectedNodeParent.path.length - 1],
-      expandParent: true,
-      getNodeKey,
-      newNode: {
-        parentId: selectedNodeParent.node.id,
-        title: value,
-      },
-    });
-    setTreeDataAddNodeChild(addNodeChild);
-    setTreeData(newTree.treeData);
+  //   addNodeChild.push({
+  //     parentId: selectedNodeParent.node.id,
+  //     title: value,
+  //     expanded: true,
+  //     icon: "menu.png",
+  //   });
+  //   let newTree = addNodeUnderParent({
+  //     treeData: treeData,
+  //     parentKey: selectedNodeParent.path[selectedNodeParent.path.length - 1],
+  //     expandParent: true,
+  //     getNodeKey,
+  //     newNode: {
+  //       parentId: selectedNodeParent.node.id,
+  //       title: value,
+  //     },
+  //   });
+  //   setTreeDataAddNodeChild(addNodeChild);
+  //   setTreeData(newTree.treeData);
 
-    inputChildEl.current.value = "";
-    // inputEls.current[treeIndex].current.value = "";
-  };
+  //   inputChildEl.current.value = "";
+  //   // inputEls.current[treeIndex].current.value = "";
+  // };
 
   // const addNodeSibling = (rowInfo) => {
   //   let { path } = rowInfo;
@@ -192,41 +302,43 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
   //   // inputEls.current[treeIndex].current.value = "";
   // };
 
-  const updateNode = (rowInfo, formValue) => {
-    if (!rowInfo) return;
-    const { node, path } = rowInfo;
-    setSelectedSidebar(node);
-    // updateInputEl.current.focus();
+  console.log("selectedSidebar", selectedSidebar);
 
-    // // const value = updateInputEl.current.value;
+  // const updateNode = (rowInfo, formValue) => {
+  //   if (!rowInfo) return;
+  //   const { node, path } = rowInfo;
+  //   setSelectedSidebar(node);
+  //   // updateInputEl.current.focus();
 
-    let newNode = {
-      id: formValue.id,
-      title: formValue.title,
-      expanded: formValue.expanded,
-      parentId: formValue.parentId,
-      count: formValue.count,
-      children: formValue.children,
-      icon: formValue.icon,
-    };
-    let newTree = changeNodeAtPath({
-      treeData,
-      path,
-      getNodeKey,
-      newNode: {
-        id: formValue.id,
-        title: formValue.title,
-        expanded: formValue.expanded,
-        parentId: formValue.parentId,
-        count: formValue.count,
-        children: formValue.children,
-        icon: formValue.icon,
-      },
-    });
-    setTreeDataUpdateNode(newNode);
-    setTreeData(newTree);
-    handleCloseFormUpdate();
-  };
+  //   // // const value = updateInputEl.current.value;
+
+  //   let newNode = {
+  //     id: formValue.id,
+  //     title: formValue.name,
+  //     expanded: formValue.expanded,
+  //     parentId: formValue.parentId,
+  //     count: formValue.count,
+  //     children: formValue.children,
+  //     icon: formValue.icon,
+  //   };
+  //   let newTree = changeNodeAtPath({
+  //     treeData,
+  //     path,
+  //     getNodeKey,
+  //     newNode: {
+  //       id: formValue.id,
+  //       title: formValue.name,
+  //       expanded: formValue.expanded,
+  //       parentId: formValue.parentId,
+  //       count: formValue.count,
+  //       children: formValue.children,
+  //       icon: formValue.icon,
+  //     },
+  //   });
+  //   setTreeDataUpdateNode(newNode);
+  //   setTreeData(newTree);
+  //   handleCloseFormUpdate();
+  // };
 
   const updateIcon = (rowInfo, newIcon) => {
     if (!rowInfo) return;
@@ -292,7 +404,7 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     );
   };
 
-  const expandAll = (rowInfo) => {
+  const expandAll = () => {
     expand(true);
   };
 
@@ -352,9 +464,17 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     }
   };
 
-  const handleOpenFormUpdate = (rowInfo) => {
+  const handleCatchRowInfoGenerate = (rowInfo) => {
+    handleRenderIcon(rowInfo);
+    // setRowInfoGenerate(rowInfo);
+  };
+
+  const handleOpenFormUpdate = (id) => {
+    let rowInfo = listRowinfo.current.find((x) => x.id === id);
+    debugger;
     setIsOpenFormUpdate(true);
     setSelectedSidebar(rowInfo);
+    console.log("handleOpenFormUpdate", rowInfo);
   };
 
   const handleCloseFormUpdate = () => {
@@ -388,19 +508,22 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
     setIsOpenFormIcon(false);
   };
 
-  const handleOpenFormAddNodeChild = (rowInfo) => {
-    setSelectedNodeParent(rowInfo);
+  const handleOpenFormAddNodeChild = (id) => {
+    let rowInfo = listRowinfo.current.find((x) => x.id === id);
+    setSelectedNodeParent(rowInfo.value);
     setIsOpenFormAddNodeChild(true);
+    console.log("bao anh", rowInfo);
   };
 
   const handleCloseFormAddNodeChild = () => {
     setIsOpenFormAddNodeChild(false);
   };
 
+  console.log("treeData", treeData);
+
   return (
     <div className="lg:ml-16 md:ml-10">
       <HeaderSidebarManagement
-        updateNode={updateNode}
         expandAll={expandAll}
         collapseAll={collapseAll}
         searchString={searchString}
@@ -420,6 +543,7 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
         selectedNodeParent={selectedNodeParent}
         setTreeDataUpdate={setTreeDataUpdate}
         isChangeTree={isChangeTree}
+        deParseData={deParseData}
       />
       <div
         style={{ height: "100vh", position: "relative", marginLeft: "20px" }}
@@ -453,8 +577,18 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
-              handleRenderIcon(rowInfo);
-              // setIsGenerateNode(true);
+              handleCatchRowInfoGenerate(rowInfo);
+              if (rowInfo.node.expanded === "truezzz") {
+                handleCatchRowInfoGenerate(rowInfo);
+              }
+              const data = listRowinfo.current;
+              const obj = {
+                id: rowInfo.node.id,
+                value: rowInfo,
+              };
+              data.push(obj);
+              listRowinfo.current = data;
+
               return {
                 buttons: [
                   <div className="text-sm">
@@ -526,7 +660,6 @@ const Tree = ({ data, fetchSidebars, rowInfoGenerate, setRowInfoGenerate }) => {
       <FormUpdateNode
         isOpenFormUpdate={isOpenFormUpdate}
         handleCloseFormUpdate={handleCloseFormUpdate}
-        updateNode={updateNode}
         selectedSidebar={selectedSidebar}
         treeDataUpdateNode={treeDataUpdateNode}
         showToastMessageSuccess={showToastMessageSuccess}
