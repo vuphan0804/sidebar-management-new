@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { sidebarAPI } from "../../../api/sidebarAPI";
 import { toast } from "react-toastify";
-import FormAddNode from "../modal/FormAddNode";
+import FormAddNode from "../sidebarForm/FormAddNode";
 
 const HeaderSidebarManagement = ({
   updateNode,

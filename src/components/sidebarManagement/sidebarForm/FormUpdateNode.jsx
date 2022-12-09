@@ -9,19 +9,27 @@ const FormUpdateNode = ({
   showToastMessageSuccess,
   showToastMessageError,
 }) => {
+  const [checkedIcon, setCheckedIcon] = useState(true);
+  const [inputIconURL, setInputIconURL] = useState("");
+  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
+  const [inputIconLocal, setInputIconLocal] = useState("");
+  const [isAddChildNode, setIsAddChildNode] = useState(false);
+  const [isRemoveNode, setIsRemoveNode] = useState(false);
+  const [isInfoNode, setIsInfoNode] = useState(false);
   const [formValue, setFormValue] = useState({
     name: "",
     id: "",
     parentId: "",
     count: "",
     icon: "",
+    isAddChildNode: false,
+    isRemoveNode: false,
+    isInfoNode: false,
   });
-  const [checkedIcon, setCheckedIcon] = useState(true);
-  const [inputIconURL, setInputIconURL] = useState("");
-  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
-  const [inputIconLocal, setInputIconLocal] = useState("");
 
   const titleRef = useRef();
+
+  console.log("isAddChildNode", isAddChildNode);
 
   const callbackUpdateNode = useCallback(async () => {
     const titleValue = titleRef.current.value;
@@ -40,6 +48,9 @@ const FormUpdateNode = ({
       id: formValue.id,
       count: formValue.count,
       icon: formValue.icon,
+      isAddChildNode: isAddChildNode,
+      isRemoveNode: isRemoveNode,
+      isInfoNode: isInfoNode,
     };
 
     if (nodeUpdate.id) {
@@ -108,6 +119,19 @@ const FormUpdateNode = ({
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
   };
+
+  const handleChangeIsAddChildNode = () => {
+    setIsAddChildNode(!isAddChildNode);
+  };
+
+  const handleChangeIsRemoveNode = () => {
+    setIsRemoveNode(!isRemoveNode);
+  };
+
+  const handleChangeIsInfoNode = () => {
+    setIsInfoNode(!isInfoNode);
+  };
+  console.log("formValue", formValue);
 
   return (
     <div>
@@ -289,7 +313,16 @@ const FormUpdateNode = ({
                   </div>
                   <div className="col-span-2">
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      <input className="mr-2" type="checkbox" name="" id="" />
+                      <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="addNodeChild"
+                        id="addNodeChild"
+                        checked={isAddChildNode}
+                        onChange={(e) =>
+                          handleChangeIsAddChildNode(e.target.value)
+                        }
+                      />
                       Add child node
                       <button
                         id="addChildNodeBtn"
@@ -300,7 +333,16 @@ const FormUpdateNode = ({
                       </button>
                     </label>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      <input className="mr-2" type="checkbox" name="" id="" />
+                      <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="removeNode"
+                        id="removeNode"
+                        checked={isRemoveNode}
+                        onChange={(e) =>
+                          handleChangeIsRemoveNode(e.target.value)
+                        }
+                      />
                       Remove node
                       <button
                         id="deleteNodeBtn"
@@ -311,7 +353,14 @@ const FormUpdateNode = ({
                       </button>
                     </label>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      <input className="mr-2" type="checkbox" name="" id="" />
+                      <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="infoNode"
+                        id="infoNode"
+                        checked={isInfoNode}
+                        onChange={(e) => handleChangeIsInfoNode(e.target.value)}
+                      />
                       Information node
                       <button
                         id="InfoNodeBtn"

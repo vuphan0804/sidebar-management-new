@@ -11,9 +11,9 @@ import Loading from "../loading/Loading";
 import HeaderSidebarManagement from "./headerSidebarManagement/HeaderSidebarManagement";
 import SidebarFormDelete from "./sidebarForm/SidebarFormDelete.jsx";
 import SidebarFormIcon from "./sidebarForm/SidebarFormIcon";
-import FormUpdateNode from "./modal/FormUpdateNode";
-import FormAddNodeChild from "./modal/FormAddNodeChild";
-import SidebarPopupInfo from "./sidebarForm/SidebarPopupInfo";
+import FormUpdateNode from "./sidebarForm/FormUpdateNode";
+import FormAddNodeChild from "./sidebarForm/FormAddNodeChild";
+import SidebarPopupInfo from "./modal/SidebarPopupInfo";
 import { toast } from "react-toastify";
 import { useRef } from "react";
 
@@ -65,7 +65,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     ).filter((a) => a.parentId !== "");
     setTreeData(parseData(parentArr, childArr));
   }, [originalData]);
-  console.log("list", listRowinfo.current);
 
   useEffect(() => {
     setTreeDataPrev(data);
@@ -118,6 +117,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                 id="deleteEl"
                 className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                 label="Delete"
+                onClick={(event) => handleOpenFormDelete(parent.id)}
               >
                 <i className="fa-sharp fa-solid fa-trash"></i>
               </button>
@@ -127,6 +127,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
               <button
                 className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                 label="Alert"
+                onClick={(event) => handleOpenPopupInfo(parent.id)}
               >
                 <i className="fa-sharp fa-solid fa-circle-info"></i>
               </button>
@@ -147,6 +148,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                     id="addChildEl"
                     className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Add Child"
+                    onClick={(event) => handleOpenFormAddNodeChild(parent.id)}
                   >
                     <i className="fa-solid fa-plus"></i>
                   </button>
@@ -157,6 +159,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                     id="deleteEl"
                     className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                     label="Delete"
+                    onClick={(event) => handleOpenFormDelete(parent.id)}
                   >
                     <i className="fa-sharp fa-solid fa-trash"></i>
                   </button>
@@ -166,6 +169,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                   <button
                     className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Alert"
+                    onClick={(event) => handleOpenPopupInfo(parent.id)}
                   >
                     <i className="fa-sharp fa-solid fa-circle-info"></i>
                   </button>
@@ -302,8 +306,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   //   // inputEls.current[treeIndex].current.value = "";
   // };
 
-  console.log("selectedSidebar", selectedSidebar);
-
   // const updateNode = (rowInfo, formValue) => {
   //   if (!rowInfo) return;
   //   const { node, path } = rowInfo;
@@ -340,40 +342,40 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   //   handleCloseFormUpdate();
   // };
 
-  const updateIcon = (rowInfo, newIcon) => {
-    if (!rowInfo) return;
+  // const updateIcon = (rowInfo, newIcon) => {
+  //   if (!rowInfo) return;
 
-    const { node, path } = rowInfo;
-    setSelectedNodeUpdateIcon(node);
+  //   const { node, path } = rowInfo;
+  //   setSelectedNodeUpdateIcon(node);
 
-    let newNode = {
-      id: node.id,
-      title: node.title,
-      expanded: node.expanded,
-      parentId: node.parentId,
-      count: node.count,
-      children: node.children,
-      icon: newIcon,
-    };
-    let newTree = changeNodeAtPath({
-      treeData,
-      path,
-      getNodeKey,
-      newNode: {
-        id: node.id,
-        title: node.title,
-        expanded: node.expanded,
-        parentId: node.parentId,
-        count: node.count,
-        children: node.children,
-        icon: newIcon,
-      },
-    });
-    setTreeDataUpdateIcon(newNode);
+  //   let newNode = {
+  //     id: node.id,
+  //     title: node.title,
+  //     expanded: node.expanded,
+  //     parentId: node.parentId,
+  //     count: node.count,
+  //     children: node.children,
+  //     icon: newIcon,
+  //   };
+  //   let newTree = changeNodeAtPath({
+  //     treeData,
+  //     path,
+  //     getNodeKey,
+  //     newNode: {
+  //       id: node.id,
+  //       title: node.title,
+  //       expanded: node.expanded,
+  //       parentId: node.parentId,
+  //       count: node.count,
+  //       children: node.children,
+  //       icon: newIcon,
+  //     },
+  //   });
+  //   setTreeDataUpdateIcon(newNode);
 
-    setTreeData(newTree);
-    handleCloseFormIcon();
-  };
+  //   setTreeData(newTree);
+  //   handleCloseFormIcon();
+  // };
 
   const removeNode = () => {
     let arrRemoveNode = [];
@@ -469,30 +471,30 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     // setRowInfoGenerate(rowInfo);
   };
 
-  const handleOpenFormUpdate = (id) => {
-    let rowInfo = listRowinfo.current.find((x) => x.id === id);
-    debugger;
+  const handleOpenFormUpdate = (rowInfo) => {
     setIsOpenFormUpdate(true);
     setSelectedSidebar(rowInfo);
-    console.log("handleOpenFormUpdate", rowInfo);
   };
 
   const handleCloseFormUpdate = () => {
     setIsOpenFormUpdate(false);
   };
 
-  const handleOpenFormDelete = (rowInfo) => {
+  const handleOpenFormDelete = (id) => {
+    let rowInfo = listRowinfo.current.find((x) => x.id === id);
+    setRowInfoDelete(rowInfo.value);
     setIsOpenFormDelete(true);
-    setRowInfoDelete(rowInfo);
   };
 
   const handleCloseFormDelete = () => {
     setIsOpenFormDelete(false);
   };
 
-  const handleOpenPopupInfo = (rowInfo) => {
+  const handleOpenPopupInfo = (id) => {
+    let rowInfo = listRowinfo.current.find((x) => x.id === id);
+
+    setPopupInfo(rowInfo.value);
     setIsOpenPopupInfo(true);
-    setPopupInfo(rowInfo);
   };
 
   const handleClosePopupInfo = () => {
@@ -512,14 +514,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     let rowInfo = listRowinfo.current.find((x) => x.id === id);
     setSelectedNodeParent(rowInfo.value);
     setIsOpenFormAddNodeChild(true);
-    console.log("bao anh", rowInfo);
   };
 
   const handleCloseFormAddNodeChild = () => {
     setIsOpenFormAddNodeChild(false);
   };
-
-  console.log("treeData", treeData);
 
   return (
     <div className="lg:ml-16 md:ml-10">
@@ -578,7 +577,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
               handleCatchRowInfoGenerate(rowInfo);
-              if (rowInfo.node.expanded === "truezzz") {
+              if (rowInfo.node.expanded === true) {
                 handleCatchRowInfoGenerate(rowInfo);
               }
               const data = listRowinfo.current;
@@ -592,14 +591,14 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
               return {
                 buttons: [
                   <div className="text-sm">
-                    <button
+                    {/* <button
                       id="addChildEl"
                       className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Add Child"
                       onClick={(event) => handleOpenFormAddNodeChild(rowInfo)}
                     >
                       <i className="fa-solid fa-plus"></i>
-                    </button>
+                    </button> */}
 
                     <button
                       id="updateEl"
@@ -619,7 +618,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                       <i className="fa-solid fa-file-pen"></i>
                     </button> */}
 
-                    <button
+                    {/* <button
                       id="deleteEl"
                       className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                       label="Delete"
@@ -635,7 +634,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                       onClick={(event) => handleOpenPopupInfo(rowInfo)}
                     >
                       <i className="fa-sharp fa-solid fa-circle-info"></i>
-                    </button>
+                    </button> */}
                   </div>,
                 ],
                 style: {
@@ -674,7 +673,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         selectedNodeUpdateIcon={selectedNodeUpdateIcon}
         treeDataUpdateIcon={treeDataUpdateIcon}
         fetchSidebars={fetchSidebars}
-        updateIcon={updateIcon}
       />
       <SidebarFormDelete
         removeNode={removeNode}

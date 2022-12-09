@@ -22,8 +22,6 @@ const SidebarMain = ({ data }) => {
     setTreeData(data);
   }, [data]);
 
-  console.log("treeData", treeData);
-
   useEffect(() => {
     window.addEventListener("resize", getSize);
     if (width < 1000) {
