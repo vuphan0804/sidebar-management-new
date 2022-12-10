@@ -123,7 +123,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
               </button>
             ) : null}
 
-            {parent.isInfo ? (
+            {parent.isInfoNode ? (
               <button
                 className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                 label="Alert"
@@ -165,7 +165,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                   </button>
                 ) : null}
 
-                {child.isInfo ? (
+                {child.isInfoNode ? (
                   <button
                     className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Alert"
@@ -191,6 +191,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   useEffect(() => {
     listRowinfo.current = [];
   }, []);
+
+  useEffect(() => {
+    handleRenderIcon();
+  }, [listRowinfo]);
+
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
       let x = {

@@ -14,12 +14,18 @@ const FormAddNodeChild = ({
     title: "",
     parentId: "",
     icon: "",
+    isAddNodeChild: "",
+    isRemoveNode: "",
+    isInfoNode: "",
   });
 
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
+  const [isAddNodeChild, setIsAddNodeChild] = useState(false);
+  const [isRemoveNode, setIsRemoveNode] = useState(false);
+  const [isInfoNode, setIsInfoNode] = useState(false);
   const titleRef = useRef();
 
   const callbackAddNodeChild = useCallback(async () => {
@@ -33,6 +39,9 @@ const FormAddNodeChild = ({
       title: formValue.title,
       parentId: formValue.parentId,
       icon: formValue.icon,
+      isAddNodeChild: formValue.isAddNodeChild,
+      isRemoveNode: formValue.isRemoveNode,
+      isInfoNode: formValue.isInfoNode,
     };
     if (addNodeChild) {
       await sidebarAPI
@@ -84,6 +93,9 @@ const FormAddNodeChild = ({
       formValue.icon = "";
       formValue.title = "";
       formValue.parentId = "";
+      formValue.isAddNodeChild = "";
+      formValue.isRemoveNode = "";
+      formValue.isInfoNode = "";
       setInputIconLocal("");
       setInputIconURL("");
       setCheckedIcon(true);
@@ -105,6 +117,18 @@ const FormAddNodeChild = ({
 
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
+  };
+
+  const handleChangeIsAddNodeChild = () => {
+    setIsAddNodeChild((state) => !state);
+  };
+
+  const handleChangeIsRemoveNode = () => {
+    setIsRemoveNode((state) => !state);
+  };
+
+  const handleChangeIsInfoNode = () => {
+    setIsInfoNode((state) => !state);
   };
 
   return (
@@ -266,6 +290,68 @@ const FormAddNodeChild = ({
                         />
                       </button>
                     ) : null}
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="isAddNodeChild"
+                        id="isAddNodeChild"
+                        checked={formValue.isAddNodeChild}
+                        onChange={(e) =>
+                          handleChange("isAddNodeChild", e.target.value)
+                        }
+                      />
+                      Add child node
+                      <button
+                        id="addChildNodeBtn"
+                        className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                        label="Add Child"
+                      >
+                        <i className="fa-solid fa-plus"></i>
+                      </button>
+                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="isRemoveNode"
+                        id="isRemoveNode"
+                        checked={formValue.isRemoveNode}
+                        onChange={(e) =>
+                          handleChange("isRemoveNode", e.target.value)
+                        }
+                      />
+                      Remove node
+                      <button
+                        id="deleteNodeBtn"
+                        className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                        label="Delete"
+                      >
+                        <i className="fa-sharp fa-solid fa-trash"></i>
+                      </button>
+                    </label>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="isInfoNode"
+                        id="isInfoNode"
+                        checked={formValue.isInfoNode}
+                        onChange={(e) =>
+                          handleChange("isInfoNode", e.target.value)
+                        }
+                      />
+                      Information node
+                      <button
+                        id="InfoNodeBtn"
+                        className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                        label="Info"
+                      >
+                        <i className="fa-sharp fa-solid fa-circle-info"></i>
+                      </button>
+                    </label>
                   </div>
                 </form>
                 <div className="text-end mt-5">

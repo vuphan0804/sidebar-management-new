@@ -50,7 +50,7 @@ const SidebarMain = ({ data }) => {
     return treeData?.map((parent, index) => {
       if (parent.children && parent.children?.length > 0) {
         return (
-          <SubMenu icon={<FiChevronsRight />} label={parent.title} key={index}>
+          <SubMenu icon={<FiChevronsRight />} label={parent.name} key={index}>
             {renderSidebar(parent.children)}
           </SubMenu>
         );
@@ -58,10 +58,10 @@ const SidebarMain = ({ data }) => {
         return (
           <MenuItem
             icon={<FiPackage />}
-            routerLink={<Link to={`/${parent.title}`} />}
+            routerLink={<Link to={`/${parent.name}`} />}
             key={index}
           >
-            {parent.title}
+            {parent.name}
           </MenuItem>
         );
     });

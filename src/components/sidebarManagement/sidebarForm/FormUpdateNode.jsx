@@ -13,7 +13,7 @@ const FormUpdateNode = ({
   const [inputIconURL, setInputIconURL] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
   const [inputIconLocal, setInputIconLocal] = useState("");
-  const [isAddChildNode, setIsAddChildNode] = useState(false);
+  const [isAddNodeChild, setIsAddNodeChild] = useState(false);
   const [isRemoveNode, setIsRemoveNode] = useState(false);
   const [isInfoNode, setIsInfoNode] = useState(false);
   const [formValue, setFormValue] = useState({
@@ -22,14 +22,12 @@ const FormUpdateNode = ({
     parentId: "",
     count: "",
     icon: "",
-    isAddChildNode: false,
-    isRemoveNode: false,
-    isInfoNode: false,
+    isAddNodeChild: "",
+    isRemoveNode: "",
+    isInfoNode: "",
   });
 
   const titleRef = useRef();
-
-  console.log("isAddChildNode", isAddChildNode);
 
   const callbackUpdateNode = useCallback(async () => {
     const titleValue = titleRef.current.value;
@@ -41,16 +39,15 @@ const FormUpdateNode = ({
 
     if (formValue.icon === "") {
     }
-
     const nodeUpdate = {
       title: formValue.name,
       parentId: formValue.parentId,
       id: formValue.id,
       count: formValue.count,
       icon: formValue.icon,
-      isAddChildNode: isAddChildNode,
-      isRemoveNode: isRemoveNode,
-      isInfoNode: isInfoNode,
+      isAddNodeChild: formValue.isAddNodeChild,
+      isRemoveNode: formValue.isRemoveNode,
+      isInfoNode: formValue.isInfoNode,
     };
 
     if (nodeUpdate.id) {
@@ -120,18 +117,17 @@ const FormUpdateNode = ({
     setInputIconURL(value);
   };
 
-  const handleChangeIsAddChildNode = () => {
-    setIsAddChildNode(!isAddChildNode);
+  const handleChangeIsAddNodeChild = () => {
+    setIsAddNodeChild((state) => !state);
   };
 
   const handleChangeIsRemoveNode = () => {
-    setIsRemoveNode(!isRemoveNode);
+    setIsRemoveNode((state) => !state);
   };
 
   const handleChangeIsInfoNode = () => {
-    setIsInfoNode(!isInfoNode);
+    setIsInfoNode((state) => !state);
   };
-  console.log("formValue", formValue);
 
   return (
     <div>
@@ -318,9 +314,9 @@ const FormUpdateNode = ({
                         type="checkbox"
                         name="addNodeChild"
                         id="addNodeChild"
-                        checked={isAddChildNode}
+                        checked={formValue.isAddNodeChild}
                         onChange={(e) =>
-                          handleChangeIsAddChildNode(e.target.value)
+                          handleChange("isAddNodeChild", e.target.checked)
                         }
                       />
                       Add child node
@@ -338,9 +334,9 @@ const FormUpdateNode = ({
                         type="checkbox"
                         name="removeNode"
                         id="removeNode"
-                        checked={isRemoveNode}
+                        checked={formValue.isRemoveNode}
                         onChange={(e) =>
-                          handleChangeIsRemoveNode(e.target.value)
+                          handleChange("isRemoveNode", e.target.checked)
                         }
                       />
                       Remove node
@@ -358,8 +354,10 @@ const FormUpdateNode = ({
                         type="checkbox"
                         name="infoNode"
                         id="infoNode"
-                        checked={isInfoNode}
-                        onChange={(e) => handleChangeIsInfoNode(e.target.value)}
+                        checked={formValue.isInfoNode}
+                        onChange={(e) =>
+                          handleChange("isInfoNode", e.target.checked)
+                        }
                       />
                       Information node
                       <button
