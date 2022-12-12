@@ -23,9 +23,6 @@ const FormAddNodeChild = ({
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
-  const [isAddNodeChild, setIsAddNodeChild] = useState(false);
-  const [isRemoveNode, setIsRemoveNode] = useState(false);
-  const [isInfoNode, setIsInfoNode] = useState(false);
   const titleRef = useRef();
 
   const callbackAddNodeChild = useCallback(async () => {
@@ -117,18 +114,6 @@ const FormAddNodeChild = ({
 
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
-  };
-
-  const handleChangeIsAddNodeChild = () => {
-    setIsAddNodeChild((state) => !state);
-  };
-
-  const handleChangeIsRemoveNode = () => {
-    setIsRemoveNode((state) => !state);
-  };
-
-  const handleChangeIsInfoNode = () => {
-    setIsInfoNode((state) => !state);
   };
 
   return (
@@ -300,7 +285,7 @@ const FormAddNodeChild = ({
                         id="isAddNodeChild"
                         checked={formValue.isAddNodeChild}
                         onChange={(e) =>
-                          handleChange("isAddNodeChild", e.target.value)
+                          handleChange("isAddNodeChild", e.target.checked)
                         }
                       />
                       Add child node
@@ -320,7 +305,7 @@ const FormAddNodeChild = ({
                         id="isRemoveNode"
                         checked={formValue.isRemoveNode}
                         onChange={(e) =>
-                          handleChange("isRemoveNode", e.target.value)
+                          handleChange("isRemoveNode", e.target.checked)
                         }
                       />
                       Remove node
@@ -340,7 +325,7 @@ const FormAddNodeChild = ({
                         id="isInfoNode"
                         checked={formValue.isInfoNode}
                         onChange={(e) =>
-                          handleChange("isInfoNode", e.target.value)
+                          handleChange("isInfoNode", e.target.checked)
                         }
                       />
                       Information node

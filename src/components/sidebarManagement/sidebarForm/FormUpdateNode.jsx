@@ -13,9 +13,6 @@ const FormUpdateNode = ({
   const [inputIconURL, setInputIconURL] = useState("");
   const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
   const [inputIconLocal, setInputIconLocal] = useState("");
-  const [isAddNodeChild, setIsAddNodeChild] = useState(false);
-  const [isRemoveNode, setIsRemoveNode] = useState(false);
-  const [isInfoNode, setIsInfoNode] = useState(false);
   const [formValue, setFormValue] = useState({
     name: "",
     id: "",
@@ -115,18 +112,6 @@ const FormUpdateNode = ({
 
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
-  };
-
-  const handleChangeIsAddNodeChild = () => {
-    setIsAddNodeChild((state) => !state);
-  };
-
-  const handleChangeIsRemoveNode = () => {
-    setIsRemoveNode((state) => !state);
-  };
-
-  const handleChangeIsInfoNode = () => {
-    setIsInfoNode((state) => !state);
   };
 
   return (

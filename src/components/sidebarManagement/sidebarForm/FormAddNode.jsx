@@ -22,15 +22,11 @@ const FormAddNode = ({
   const [checkedIcon, setCheckedIcon] = useState(true);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
-  const [isAddNodeChild, setIsAddNodeChild] = useState(false);
-  const [isRemoveNode, setIsRemoveNode] = useState(false);
-  const [isInfoNode, setIsInfoNode] = useState(false);
 
   const titleRef = useRef();
 
   const callbackAddNodeNode = useCallback(async () => {
     const titleValue = titleRef.current.value;
-    debugger;
 
     if (titleValue === "") {
       titleRef.current.focus();
@@ -112,22 +108,6 @@ const FormAddNode = ({
       };
     });
   };
-
-  console.log("isAddNodeChild", isAddNodeChild);
-
-  const handleChangeIsAddNodeChild = () => {
-    setIsAddNodeChild((state) => !state);
-  };
-
-  const handleChangeIsRemoveNode = () => {
-    setIsRemoveNode((state) => !state);
-  };
-
-  const handleChangeIsInfoNode = () => {
-    setIsInfoNode((state) => !state);
-  };
-
-  console.log("formValue", formValue);
 
   return (
     <div>
@@ -296,7 +276,7 @@ const FormAddNode = ({
                         id="isAddNodeChild"
                         checked={formValue.isAddNodeChild}
                         onChange={(e) =>
-                          handleChange("isAddNodeChild", e.target.value)
+                          handleChange("isAddNodeChild", e.target.checked)
                         }
                       />
                       Add child node
@@ -316,7 +296,7 @@ const FormAddNode = ({
                         id="isRemoveNode"
                         checked={formValue.isRemoveNode}
                         onChange={(e) =>
-                          handleChange("isRemoveNode", e.target.value)
+                          handleChange("isRemoveNode", e.target.checked)
                         }
                       />
                       Remove node
@@ -336,7 +316,7 @@ const FormAddNode = ({
                         id="isInfoNode"
                         checked={formValue.isInfoNode}
                         onChange={(e) =>
-                          handleChange("isInfoNode", e.target.value)
+                          handleChange("isInfoNode", e.target.checked)
                         }
                       />
                       Information node

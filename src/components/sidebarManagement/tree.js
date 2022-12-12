@@ -16,6 +16,7 @@ import FormAddNodeChild from "./sidebarForm/FormAddNodeChild";
 import SidebarPopupInfo from "./modal/SidebarPopupInfo";
 import { toast } from "react-toastify";
 import { useRef } from "react";
+import { useCallback } from "react";
 
 const Tree = ({ data, fetchSidebars, originalData }) => {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0),
@@ -70,13 +71,36 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     setTreeDataPrev(data);
   }, [data]);
 
+  let treeDataCloneWithoutExpand = _.cloneDeep(treeData).filter(
+    (e) => delete e.expanded
+  );
+
+  let treeDataPrevCloneWithoutExpand = _.cloneDeep(treeDataPrev).filter(
+    (e) => delete e.expanded
+  );
+
+  const compareArrays = (a, b) => {
+    return JSON.stringify(a) !== JSON.stringify(b);
+  };
+
   useEffect(() => {
-    if (compareArrays(treeDataPrev, treeData)) {
+    if (
+      compareArrays(treeDataPrevCloneWithoutExpand, treeDataCloneWithoutExpand)
+    ) {
       setIsChangeTree(false);
     } else {
       setIsChangeTree(true);
     }
   }, [treeData]);
+
+  console.log(
+    "compareArrays(treeDataPrevCloneWithoutExpand, treeDataCloneWithoutExpand)",
+    compareArrays(treeDataPrevCloneWithoutExpand, treeDataCloneWithoutExpand)
+  );
+
+  console.log("treeDataPrevCloneWithoutExpand", treeDataPrevCloneWithoutExpand);
+
+  console.log("treeDataCloneWithoutExpand", treeDataCloneWithoutExpand);
 
   useEffect(() => {
     if (!treeData || treeData.length) {
@@ -88,15 +112,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     } else setIsLoading(true);
   }, [treeData]);
 
-  const compareArrays = (a, b) => {
-    return JSON.stringify(a) != JSON.stringify(b);
-  };
-
   const parseData = (dataParse, childArr) => {
     dataParse.forEach((parent) => {
       let childHaveChild = [];
       let childOnly = [];
-      parent.name = parent.isName ? parent.name : parent.title;
+      parent.name = parent.name ? parent.name : parent.title;
       parent.title = (
         <div className="flex items-center">
           <div>{parent.name}</div>
@@ -106,7 +126,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                 id="addChildEl"
                 className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                 label="Add Child"
-                onClick={(event) => handleOpenFormAddNodeChild(parent.id)}
+                onClick={() => handleOpenFormAddNodeChild(parent.id)}
               >
                 <i className="fa-solid fa-plus"></i>
               </button>
@@ -117,7 +137,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                 id="deleteEl"
                 className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                 label="Delete"
-                onClick={(event) => handleOpenFormDelete(parent.id)}
+                onClick={() => handleOpenFormDelete(parent.id)}
               >
                 <i className="fa-sharp fa-solid fa-trash"></i>
               </button>
@@ -127,7 +147,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
               <button
                 className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                 label="Alert"
-                onClick={(event) => handleOpenPopupInfo(parent.id)}
+                onClick={() => handleOpenPopupInfo(parent.id)}
               >
                 <i className="fa-sharp fa-solid fa-circle-info"></i>
               </button>
@@ -135,9 +155,8 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
           </div>
         </div>
       );
-      parent.isName = true;
       childArr.forEach((child) => {
-        child.name = child.title;
+        child.name = child.name ? child.name : child.title;
         if (child.parentId == parent.id) {
           child.title = (
             <div className="flex items-center">
@@ -148,7 +167,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                     id="addChildEl"
                     className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Add Child"
-                    onClick={(event) => handleOpenFormAddNodeChild(parent.id)}
+                    onClick={() => handleOpenFormAddNodeChild(parent.id)}
                   >
                     <i className="fa-solid fa-plus"></i>
                   </button>
@@ -159,7 +178,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                     id="deleteEl"
                     className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                     label="Delete"
-                    onClick={(event) => handleOpenFormDelete(parent.id)}
+                    onClick={() => handleOpenFormDelete(parent.id)}
                   >
                     <i className="fa-sharp fa-solid fa-trash"></i>
                   </button>
@@ -169,7 +188,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                   <button
                     className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Alert"
-                    onClick={(event) => handleOpenPopupInfo(parent.id)}
+                    onClick={() => handleOpenPopupInfo(parent.id)}
                   >
                     <i className="fa-sharp fa-solid fa-circle-info"></i>
                   </button>
@@ -177,7 +196,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
               </div>
             </div>
           );
-          child.isName = true;
           childHaveChild.push(child);
         } else childOnly.push(child);
       });
@@ -194,7 +212,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   useEffect(() => {
     handleRenderIcon();
-  }, [listRowinfo]);
+  }, [listRowinfo, treeData]);
 
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
@@ -402,6 +420,18 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     setTreeData(treeData);
   };
 
+  // const expand = useCallback(
+  //   (expanded) => {
+  //     setTreeData(
+  //       toggleExpandedForAll({
+  //         treeData,
+  //         expanded,
+  //       })
+  //     );
+  //     console.log("keke");
+  //   },
+  //   [treeData]
+  // );
   const expand = (expanded) => {
     setTreeData(
       toggleExpandedForAll({
@@ -413,11 +443,17 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   const expandAll = () => {
     expand(true);
+    handleRenderIcon();
   };
 
   const collapseAll = () => {
     expand(false);
+    handleRenderIcon();
   };
+
+  useEffect(() => {
+    handleRenderIcon();
+  }, [expand]);
 
   // const alertNodeInfo = ({ node, path, treeIndex }) => {
   //   const objectString = Object.keys(node)
@@ -476,6 +512,16 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     // setRowInfoGenerate(rowInfo);
   };
 
+  const handleOpenFormAddNodeChild = (id) => {
+    let rowInfo = listRowinfo.current.find((x) => x.id === id);
+    setSelectedNodeParent(rowInfo.value);
+    setIsOpenFormAddNodeChild(true);
+  };
+
+  const handleCloseFormAddNodeChild = () => {
+    setIsOpenFormAddNodeChild(false);
+  };
+
   const handleOpenFormUpdate = (rowInfo) => {
     setIsOpenFormUpdate(true);
     setSelectedSidebar(rowInfo);
@@ -513,16 +559,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   const handleCloseFormIcon = () => {
     setIsOpenFormIcon(false);
-  };
-
-  const handleOpenFormAddNodeChild = (id) => {
-    let rowInfo = listRowinfo.current.find((x) => x.id === id);
-    setSelectedNodeParent(rowInfo.value);
-    setIsOpenFormAddNodeChild(true);
-  };
-
-  const handleCloseFormAddNodeChild = () => {
-    setIsOpenFormAddNodeChild(false);
   };
 
   return (
@@ -568,6 +604,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             }}
             onChange={(treeData) => {
               updateTreeData(treeData);
+              handleRenderIcon();
             }}
             searchQuery={searchString}
             searchFocusOffset={searchFocusIndex}
@@ -584,7 +621,20 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
               handleCatchRowInfoGenerate(rowInfo);
               if (rowInfo.node.expanded === true) {
                 handleCatchRowInfoGenerate(rowInfo);
+              } else {
+                handleCatchRowInfoGenerate(rowInfo);
               }
+
+              if (rowInfo) {
+                const collapseButton = document.getElementsByClassName(
+                  "rst__collapseButton"
+                );
+                if (collapseButton[rowInfo.treeIndex]) {
+                  collapseButton[rowInfo.treeIndex].onClick =
+                    handleRenderIcon();
+                }
+              }
+
               const data = listRowinfo.current;
               const obj = {
                 id: rowInfo.node.id,
@@ -600,7 +650,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                       id="addChildEl"
                       className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Add Child"
-                      onClick={(event) => handleOpenFormAddNodeChild(rowInfo)}
+                      onClick={() => handleOpenFormAddNodeChild(rowInfo)}
                     >
                       <i className="fa-solid fa-plus"></i>
                     </button> */}
@@ -609,7 +659,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                       id="updateEl"
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Update"
-                      onClick={(event) => handleOpenFormUpdate(rowInfo)}
+                      onClick={() => handleOpenFormUpdate(rowInfo)}
                     >
                       <i className="fa-regular fa-pen-to-square"></i>
                     </button>
@@ -618,7 +668,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                       id="updateIconEl"
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Update Icon"
-                      onClick={(event) => handleOpenFormIcon(rowInfo)}
+                      onClick={() => handleOpenFormIcon(rowInfo)}
                     >
                       <i className="fa-solid fa-file-pen"></i>
                     </button> */}
@@ -627,8 +677,8 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                       id="deleteEl"
                       className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                       label="Delete"
-                      onClick={(event) => handleOpenFormDelete(rowInfo)}
-                      // onClick={(event) => removeNode(rowInfo)}
+                      onClick={() => handleOpenFormDelete(rowInfo)}
+                      // onClick={() => removeNode(rowInfo)}
                     >
                       <i className="fa-sharp fa-solid fa-trash"></i>
                     </button>
@@ -636,7 +686,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                     <button
                       className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                       label="Alert"
-                      onClick={(event) => handleOpenPopupInfo(rowInfo)}
+                      onClick={() => handleOpenPopupInfo(rowInfo)}
                     >
                       <i className="fa-sharp fa-solid fa-circle-info"></i>
                     </button> */}
