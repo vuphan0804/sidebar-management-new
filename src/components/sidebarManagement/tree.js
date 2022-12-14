@@ -250,6 +250,12 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     });
     return data;
   };
+  // console.log("treeData", originalData);
+  // const findNode = () => {
+  //   const filterResult = originalData.filter((e) => e.name.includes("m"));
+  //   console.log("filterResult", filterResult);
+  // };
+  // findNode();
 
   // const createNode = () => {
   //   const value = inputEl.current.value;
