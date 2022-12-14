@@ -18,8 +18,8 @@ const FormAddNode = ({
     isInfoNode: false,
   });
 
-  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
-  const [checkedIcon, setCheckedIcon] = useState(true);
+  const [checkedIconURL, setCheckedIconURL] = useState(false);
+  const [checkedIconLocal, setCheckedIconLocal] = useState(false);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
 
@@ -53,29 +53,25 @@ const FormAddNode = ({
   }, [formValue]);
 
   useEffect(() => {
-    if (!checkedIcon) {
+    if (!checkedIconLocal && !checkedIconURL) {
       setFormValue((prev) => ({
         ...prev,
-        icon: inputIconURL,
+        icon: "",
       }));
-      setIsDisabledIconLocal(true);
-    } else {
+    }
+    if (checkedIconLocal) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconLocal,
       }));
-      setIsDisabledIconLocal(false);
     }
-  }, [checkedIcon]);
-
-  useEffect(() => {
-    if (!checkedIcon) {
+    if (checkedIconURL) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconURL,
       }));
     }
-  }, [inputIconURL]);
+  }, [checkedIconLocal, checkedIconURL, inputIconURL]);
 
   useEffect(() => {
     if (!isOpenFormAddNode) {
@@ -88,12 +84,19 @@ const FormAddNode = ({
       formValue.isInfoNode = false;
       setInputIconLocal("");
       setInputIconURL("");
-      setCheckedIcon(true);
+      setCheckedIconLocal(false);
+      setCheckedIconURL(false);
     }
   }, [isOpenFormAddNode]);
 
-  const handleChangeIcon = () => {
-    setCheckedIcon(!checkedIcon);
+  const handleCheckedIconLocal = () => {
+    setCheckedIconURL(false);
+    setCheckedIconLocal((state) => !state);
+  };
+
+  const handleCheckedIconURL = () => {
+    setCheckedIconLocal(false);
+    setCheckedIconURL((state) => !state);
   };
 
   const handleChangeIconURL = (value) => {
@@ -115,9 +118,9 @@ const FormAddNode = ({
         <div
           id="authentication-modal"
           aria-hidden="true"
-          className="overflow-y-auto overflow-x-hidden fixed bg-black bg-opacity-10 pl-96 pt-52 top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full"
+          className="overflow-y-auto overflow-x-hidden fixed bg-black bg-opacity-10 z-50 p-4 w-full inset-0 h-modal md:h-full"
         >
-          <div className="relative w-full max-w-md h-full md:h-auto">
+          <div className="translate-y-1/4 translate-x-3/4 w-full max-w-md h-full md:h-auto">
             <div className="relative bg-gray-100 rounded-lg shadow dark:bg-gray-700">
               <button
                 type="button"
@@ -176,9 +179,9 @@ const FormAddNode = ({
                         type="checkbox"
                         name=""
                         id="checkedIconLocal"
-                        checked={checkedIcon}
+                        checked={checkedIconLocal}
                         onChange={(e) => {
-                          handleChangeIcon(e);
+                          handleCheckedIconLocal(e);
                         }}
                       />
                       Icon
@@ -187,7 +190,7 @@ const FormAddNode = ({
                       {icons.map((iconz, index) => {
                         return (
                           <button
-                            disabled={isDisabledIconLocal}
+                            disabled={!checkedIconLocal}
                             className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                             type="button"
                             key={index}
@@ -212,7 +215,7 @@ const FormAddNode = ({
                     </div>
                   </div>
                   <div className="text-center mt-5">
-                    <p className="mb-2">Icon select:</p>{" "}
+                    <p className="mb-2">Icon select:</p>
                     {inputIconLocal ? (
                       <button
                         className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
@@ -237,8 +240,8 @@ const FormAddNode = ({
                         type="checkbox"
                         name=""
                         id="checkedIconURL"
-                        checked={!checkedIcon}
-                        onChange={(e) => handleChangeIcon(e)}
+                        checked={checkedIconURL}
+                        onChange={(e) => handleCheckedIconURL(e)}
                       />
                       Icon URL
                     </label>
@@ -247,6 +250,7 @@ const FormAddNode = ({
                       type="text"
                       name="iconURL"
                       id="iconURL"
+                      disabled={!checkedIconURL}
                       value={inputIconURL}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="iconURL"

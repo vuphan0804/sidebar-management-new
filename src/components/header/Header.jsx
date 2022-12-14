@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <div
-      className={`h-20 w-full z-10 text-white bg-slate-500 flex items-center justify-around fixed transition-primary ${headerFixed}`}
+      className={`h-20 w-full z-50 text-white bg-slate-500 flex items-center justify-around fixed transition-primary ${headerFixed}`}
     >
       <div className="text-3xl font-normal">VP</div>
       <div className="flex ">

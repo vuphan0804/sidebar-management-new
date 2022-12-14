@@ -19,10 +19,10 @@ const FormAddNodeChild = ({
     isInfoNode: "",
   });
 
-  const [checkedIcon, setCheckedIcon] = useState(true);
+  const [checkedIconURL, setCheckedIconURL] = useState(false);
+  const [checkedIconLocal, setCheckedIconLocal] = useState(false);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
-  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
   const titleRef = useRef();
 
   const callbackAddNodeChild = useCallback(async () => {
@@ -61,29 +61,25 @@ const FormAddNodeChild = ({
   }, [selectedNodeParent]);
 
   useEffect(() => {
-    if (!checkedIcon) {
+    if (!checkedIconLocal && !checkedIconURL) {
       setFormValue((prev) => ({
         ...prev,
-        icon: inputIconURL,
+        icon: "",
       }));
-      setIsDisabledIconLocal(true);
-    } else {
+    }
+    if (checkedIconLocal) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconLocal,
       }));
-      setIsDisabledIconLocal(false);
     }
-  }, [checkedIcon]);
-
-  useEffect(() => {
-    if (!checkedIcon) {
+    if (checkedIconURL) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconURL,
       }));
     }
-  }, [inputIconURL]);
+  }, [checkedIconLocal, checkedIconURL, inputIconURL]);
 
   useEffect(() => {
     if (!isOpenFormAddNodeChild) {
@@ -95,7 +91,8 @@ const FormAddNodeChild = ({
       formValue.isInfoNode = "";
       setInputIconLocal("");
       setInputIconURL("");
-      setCheckedIcon(true);
+      setCheckedIconLocal(false);
+      setCheckedIconURL(false);
     }
   }, [isOpenFormAddNodeChild]);
 
@@ -108,13 +105,21 @@ const FormAddNodeChild = ({
     });
   };
 
-  const handleChangeIcon = () => {
-    setCheckedIcon(!checkedIcon);
+  const handleCheckedIconLocal = () => {
+    setCheckedIconURL(false);
+    setCheckedIconLocal((state) => !state);
+  };
+
+  const handleCheckedIconURL = () => {
+    setCheckedIconLocal(false);
+    setCheckedIconURL((state) => !state);
   };
 
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
   };
+
+  console.log("formValue", formValue);
 
   return (
     <div>
@@ -185,9 +190,9 @@ const FormAddNodeChild = ({
                         type="checkbox"
                         name=""
                         id="checkedIconLocal"
-                        checked={checkedIcon}
+                        checked={checkedIconLocal}
                         onChange={(e) => {
-                          handleChangeIcon(e);
+                          handleCheckedIconLocal(e);
                         }}
                       />
                       Icon
@@ -196,7 +201,7 @@ const FormAddNodeChild = ({
                       {icons.map((iconz, index) => {
                         return (
                           <button
-                            disabled={isDisabledIconLocal}
+                            disabled={!checkedIconLocal}
                             className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                             type="button"
                             key={index}
@@ -246,12 +251,13 @@ const FormAddNodeChild = ({
                         type="checkbox"
                         name=""
                         id="checkedIconURL"
-                        checked={!checkedIcon}
-                        onChange={(e) => handleChangeIcon(e)}
+                        checked={checkedIconURL}
+                        onChange={(e) => handleCheckedIconURL(e)}
                       />
                       Icon URL
                     </label>
                     <input
+                      disabled={!checkedIconURL}
                       onChange={(e) => handleChangeIconURL(e.target.value)}
                       type="text"
                       name="iconURL"

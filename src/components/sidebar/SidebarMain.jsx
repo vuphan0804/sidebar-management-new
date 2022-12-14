@@ -24,7 +24,7 @@ const SidebarMain = ({ data }) => {
 
   useEffect(() => {
     window.addEventListener("resize", getSize);
-    if (width < 1000) {
+    if (width < 1200) {
       setCollapse(true);
     } else {
       setCollapse(false);
@@ -50,14 +50,26 @@ const SidebarMain = ({ data }) => {
     return treeData?.map((parent, index) => {
       if (parent.children && parent.children?.length > 0) {
         return (
-          <SubMenu icon={<FiChevronsRight />} label={parent.name} key={index}>
+          <SubMenu
+            icon={
+              parent.icon ? (
+                <img className="w-5 h-5" src={`${parent.icon}`} />
+              ) : null
+            }
+            label={parent.name}
+            key={index}
+          >
             {renderSidebar(parent.children)}
           </SubMenu>
         );
       } else
         return (
           <MenuItem
-            icon={<FiPackage />}
+            icon={
+              parent.icon ? (
+                <img className="w-5 h-5" src={`${parent.icon}`} />
+              ) : null
+            }
             routerLink={<Link to={`/${parent.name}`} />}
             key={index}
           >
@@ -67,7 +79,7 @@ const SidebarMain = ({ data }) => {
     });
   };
   return (
-    <div className="fixed flex mt-15 h-full">
+    <div className="fixed flex mt-15 h-full z-10">
       <Sidebar width="300px" collapsedWidth="80px" defaultCollapsed={collapse}>
         <div className="text-xl font-medium text-center mt-28">Sidebar</div>
         <div className="mx-8 left-10 z-10">

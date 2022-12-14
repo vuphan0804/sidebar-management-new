@@ -22,6 +22,8 @@ const HeaderSidebarManagement = ({
   treeDataRemoveNode,
   isChangeTree,
   deParseData,
+  searchNode,
+  setSearchNode,
 }) => {
   const [updateSidebar, setUpdateSidebar] = useState(selectedSidebar); //rowInfo
   const [input, setInput] = useState("");
@@ -166,100 +168,18 @@ const HeaderSidebarManagement = ({
       <h3 className="text-3xl hello font-medium text-center mb-5">
         Sidebar Management
       </h3>
-      <div className="">
-        <button
-          className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-          onClick={handleOpenFormAddNode}
-        >
-          Create Node
-        </button>
-        {/* <input
-            className="border p-2 rounded-md transition-primary"
-            ref={inputEl}
-            type="text"
-          /> */}
-
-        {/* <div className="flex mb-2">
-          <button
-            className="p-2 px-3 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-            onClick={addNodeChild}
-          >
-            Add Node Child
-          </button>
-          <input
-            className="border p-2 rounded-md transition-primary"
-            ref={inputChildEl}
-            type="text"
-          />
-          <br />
-        </div>
-        <div className="flex">
-          <button
-            className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-            onClick={updateHandler}
-          >
-            Update Node
-          </button>
-          <input
-            className="border p-2 rounded-md transition-primary"
-            ref={updateInputEl}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <br />
-        </div> */}
-
-        <button
-          className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-          onClick={reloadPage}
-        >
-          Refresh Page
-        </button>
-
-        <br />
-      </div>
-      <br />
-      <button
-        className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-        onClick={expandAll}
-      >
-        Expand All
-      </button>
-      <button
-        className="p-2 m-2 bg-gray-200 rounded-md hover:bg-gray-400 transition-primary"
-        onClick={collapseAll}
-      >
-        Collapse All
-      </button>
-      {isChangeTree ? (
-        <button
-          disabled={isChangeTree}
-          className="p-2 px-4 m-2 text-white bg-blue-400 rounded-md transition-primary"
-        >
-          Save
-        </button>
-      ) : (
-        <button
-          onClick={handleSaving}
-          className="p-2 px-4 m-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-primary"
-        >
-          Save
-        </button>
-      )}
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <form
-        style={{ display: "inline-block" }}
+        className=""
         onSubmit={(event) => {
           event.preventDefault();
         }}
       >
         <label htmlFor="find-box">
           <input
-            className="border rounded-md p-2"
+            className="border rounded-md p-2 w-8/12"
             id="find-box"
             type="text"
-            placeholder="Search"
+            placeholder="Search..."
             value={searchString}
             onChange={(event) => setSearchString(event.target.value)}
           />
@@ -284,12 +204,75 @@ const HeaderSidebarManagement = ({
         </button>
 
         <span>
-          &nbsp;
-          {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
-          &nbsp;/&nbsp;
+          {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /
           {searchFoundCount || 0}
         </span>
       </form>
+      <form
+        className=""
+        onSubmit={(event) => {
+          event.preventDefault();
+        }}
+      >
+        <label htmlFor="find-box">
+          <input
+            className="border rounded-md p-2 w-8/12"
+            id="find-box"
+            type="text"
+            placeholder="Search node..."
+            value={searchNode}
+            onChange={(event) => setSearchNode(event.target.value)}
+          />
+        </label>
+      </form>
+      <div className="flex justify-start gap-4 text-white text-center my-5">
+        <button
+          className="p-2 px-3 flex justify-center items-center gap-2 bg-sky-600 rounded-md hover:bg-sky-700 transition-primary"
+          onClick={handleOpenFormAddNode}
+        >
+          <i className="fa-solid fa-plus"></i>
+          <p className="hidden lg:block">Create node</p>
+        </button>
+        {isChangeTree ? (
+          <button
+            disabled={isChangeTree}
+            className="p-2 px-3 flex justify-center items-center gap-2 text-white bg-blue-400 rounded-md transition-primary"
+          >
+            <i className="fa-solid fa-floppy-disk"></i>
+            <p className="hidden lg:block">Save</p>
+          </button>
+        ) : (
+          <button
+            onClick={handleSaving}
+            className="p-2 px-3 flex justify-center items-center gap-2  text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-primary"
+          >
+            <i className="fa-solid fa-floppy-disk"></i>
+            <p className="hidden lg:block">Save</p>
+          </button>
+        )}
+        <button
+          className="p-2 px-3 flex justify-center items-center gap-2 bg-gray-500 rounded-md hover:bg-gray-600 transition-primary"
+          onClick={expandAll}
+        >
+          <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
+          <p className="hidden lg:block">Expand all</p>{" "}
+        </button>
+        <button
+          className="p-2 px-3 flex justify-center items-center gap-2 bg-gray-500 rounded-md hover:bg-gray-600 transition-primary"
+          onClick={collapseAll}
+        >
+          <i className="fa-solid fa-down-left-and-up-right-to-center"></i>
+          <p className="hidden lg:block">Collapse all</p>
+        </button>
+        <button
+          className="p-2 px-3 flex justify-center items-center gap-2 bg-green-500 rounded-md hover:bg-green-600 transition-primary"
+          onClick={reloadPage}
+        >
+          <i className="fa-solid fa-rotate-right"></i>
+          <p className="hidden lg:block">Refresh page</p>
+        </button>
+      </div>
+
       <FormAddNode
         handleOpenFormAddNode={handleOpenFormAddNode}
         handleCloseFormAddNode={handleCloseFormAddNode}

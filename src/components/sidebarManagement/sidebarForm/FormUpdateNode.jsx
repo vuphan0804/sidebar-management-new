@@ -9,9 +9,9 @@ const FormUpdateNode = ({
   showToastMessageSuccess,
   showToastMessageError,
 }) => {
-  const [checkedIcon, setCheckedIcon] = useState(true);
+  const [checkedIconURL, setCheckedIconURL] = useState(false);
+  const [checkedIconLocal, setCheckedIconLocal] = useState(false);
   const [inputIconURL, setInputIconURL] = useState("");
-  const [isDisabledIconLocal, setIsDisabledIconLocal] = useState(false);
   const [inputIconLocal, setInputIconLocal] = useState("");
   const [formValue, setFormValue] = useState({
     name: "",
@@ -65,35 +65,39 @@ const FormUpdateNode = ({
   }, [selectedSidebar]);
 
   useEffect(() => {
-    if (!checkedIcon) {
+    if (!checkedIconLocal && !checkedIconURL) {
       setFormValue((prev) => ({
         ...prev,
-        icon: inputIconURL,
+        icon: "",
       }));
-      setIsDisabledIconLocal(true);
-    } else {
+    }
+    if (checkedIconLocal) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconLocal,
       }));
-      setIsDisabledIconLocal(false);
     }
-  }, [checkedIcon]);
-
-  useEffect(() => {
-    if (!checkedIcon) {
+    if (checkedIconURL) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconURL,
       }));
     }
-  }, [inputIconURL]);
+  }, [checkedIconLocal, checkedIconURL, inputIconURL]);
 
   useEffect(() => {
     if (!isOpenFormUpdate) {
       setInputIconURL("");
       setInputIconLocal("");
-      setCheckedIcon(true);
+      setCheckedIconLocal(false);
+      setCheckedIconURL(false);
+    }
+    if (isOpenFormUpdate) {
+      if (checkedIconURL) {
+        // setInputIconURL(selectedSidebar.icon);
+        console.log("selectedSidebar.icon", selectedSidebar.icon);
+      }
+      console.log("selectedSidebar.icon", selectedSidebar.node?.icon);
     }
   }, [isOpenFormUpdate]);
 
@@ -106,13 +110,23 @@ const FormUpdateNode = ({
     });
   };
 
-  const handleChangeIcon = () => {
-    setCheckedIcon(!checkedIcon);
+  const handleCheckedIconLocal = () => {
+    setCheckedIconURL(false);
+    setCheckedIconLocal((state) => !state);
+  };
+
+  const handleCheckedIconURL = () => {
+    setCheckedIconLocal(false);
+    setCheckedIconURL((state) => !state);
   };
 
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
   };
+
+  console.log("formValue", formValue);
+  console.log("checkedIconURL", checkedIconURL);
+  console.log("checkedIconLocal", checkedIconLocal);
 
   return (
     <div>
@@ -181,9 +195,9 @@ const FormUpdateNode = ({
                         type="checkbox"
                         name=""
                         id="checkedIconLocal"
-                        checked={checkedIcon}
+                        checked={checkedIconLocal}
                         onChange={(e) => {
-                          handleChangeIcon(e);
+                          handleCheckedIconLocal(e);
                         }}
                       />
                       Icon
@@ -192,7 +206,7 @@ const FormUpdateNode = ({
                       {icons.map((iconz, index) => {
                         return (
                           <button
-                            disabled={isDisabledIconLocal}
+                            disabled={!checkedIconLocal}
                             className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                             type="button"
                             key={index}
@@ -252,8 +266,8 @@ const FormUpdateNode = ({
                         type="checkbox"
                         name=""
                         id="checkedIconURL"
-                        checked={!checkedIcon}
-                        onChange={(e) => handleChangeIcon(e)}
+                        checked={checkedIconURL}
+                        onChange={(e) => handleCheckedIconURL(e)}
                       />
                       Icon URL
                     </label>
@@ -262,6 +276,7 @@ const FormUpdateNode = ({
                       type="text"
                       name="iconURL"
                       id="iconURL"
+                      disabled={!checkedIconURL}
                       value={inputIconURL}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="iconURL"

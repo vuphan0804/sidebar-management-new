@@ -35,7 +35,7 @@ const SidebarForm = ({
                   <span className="sr-only">Close modal</span>
                 </button>
                 <div className="p-6 text-center">
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  <h3 className="mb-5 text-xl font-medium text-gray-900 dark:text-gray-400">
                     Are you sure want to delete?
                   </h3>
 

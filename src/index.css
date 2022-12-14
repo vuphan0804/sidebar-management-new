@@ -11,3 +11,8 @@
 .bg-sidebar {
   background-color: rgb(249, 249, 249, 0.7);
 }
+
+.rst__rowLabel {
+  padding-right: 0 !important;
+  width: 100% !important;
+}

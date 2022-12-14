@@ -42,7 +42,7 @@ const SidebarForm = ({ isOpenPopupInfo, handleClosePopupInfo, popupInfo }) => {
                   <span className="sr-only">Close modal</span>
                 </button>
                 <div className="p-6 text-center">
-                  <h3 className="mb-5 p-2 text-lg font-normal text-gray-500 dark:text-gray-400">
+                  <h3 className="mb-5 p-2 text-xl font-medium text-gray-900 dark:text-gray-400">
                     Info passed to the icon and button generators!
                   </h3>
                   <div className="text-start">

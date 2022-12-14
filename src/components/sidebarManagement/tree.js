@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath,
@@ -9,14 +9,12 @@ import "react-sortable-tree/style.css";
 import _ from "lodash";
 import Loading from "../loading/Loading";
 import HeaderSidebarManagement from "./headerSidebarManagement/HeaderSidebarManagement";
-import SidebarFormDelete from "./sidebarForm/SidebarFormDelete.jsx";
+import SidebarFormDelete from "./modal/SidebarPopupDelete.jsx";
 import SidebarFormIcon from "./sidebarForm/SidebarFormIcon";
 import FormUpdateNode from "./sidebarForm/FormUpdateNode";
 import FormAddNodeChild from "./sidebarForm/FormAddNodeChild";
 import SidebarPopupInfo from "./modal/SidebarPopupInfo";
 import { toast } from "react-toastify";
-import { useRef } from "react";
-import { useCallback } from "react";
 
 const Tree = ({ data, fetchSidebars, originalData }) => {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0),
@@ -36,7 +34,8 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     [popupInfo, setPopupInfo] = useState([]),
     [searchString, setSearchString] = useState(""),
     [treeDataPrev, setTreeDataPrev] = useState([treeData]),
-    [rowInfoGenerate, setRowInfoGenerate] = useState([]);
+    [rowInfoTreeIndex, setRowInfoTreeIndex] = useState([]);
+  const [searchNode, setSearchNode] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,7 +47,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     [isChangeTree, setIsChangeTree] = useState(true);
   const listRowinfo = useRef();
   const getNodeKey = ({ treeIndex }) => treeIndex;
-
   // useEffect(() => {
   //   setTreeData(data);
   // }, [data]);
@@ -71,12 +69,25 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     setTreeDataPrev(data);
   }, [data]);
 
-  let treeDataCloneWithoutExpand = _.cloneDeep(treeData).filter(
-    (e) => delete e.expanded
+  // Save active
+
+  const parseTreeDataWithoutExpand = (treeData) => {
+    return treeData.map((e) => {
+      delete e.expanded;
+      if (e.children && e.children.length > 0) {
+        e.children = parseTreeDataWithoutExpand(e.children);
+        return e;
+      }
+      return e;
+    });
+  };
+
+  let treeDataPrevCloneWithoutExpanded = parseTreeDataWithoutExpand(
+    _.cloneDeep(treeDataPrev)
   );
 
-  let treeDataPrevCloneWithoutExpand = _.cloneDeep(treeDataPrev).filter(
-    (e) => delete e.expanded
+  let treeDataCloneWithoutExpanded = parseTreeDataWithoutExpand(
+    _.cloneDeep(treeData)
   );
 
   const compareArrays = (a, b) => {
@@ -85,22 +96,16 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   useEffect(() => {
     if (
-      compareArrays(treeDataPrevCloneWithoutExpand, treeDataCloneWithoutExpand)
+      compareArrays(
+        treeDataPrevCloneWithoutExpanded,
+        treeDataCloneWithoutExpanded
+      )
     ) {
       setIsChangeTree(false);
     } else {
       setIsChangeTree(true);
     }
   }, [treeData]);
-
-  console.log(
-    "compareArrays(treeDataPrevCloneWithoutExpand, treeDataCloneWithoutExpand)",
-    compareArrays(treeDataPrevCloneWithoutExpand, treeDataCloneWithoutExpand)
-  );
-
-  console.log("treeDataPrevCloneWithoutExpand", treeDataPrevCloneWithoutExpand);
-
-  console.log("treeDataCloneWithoutExpand", treeDataCloneWithoutExpand);
 
   useEffect(() => {
     if (!treeData || treeData.length) {
@@ -118,11 +123,12 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
       let childOnly = [];
       parent.name = parent.name ? parent.name : parent.title;
       parent.title = (
-        <div className="flex items-center">
-          <div>{parent.name}</div>
-          <div className="ml-10">
+        <div className="flex items-center justify-between">
+          <div className="break-words">{parent.name}</div>
+          <div className="ml-10 text-sm">
             {parent.isAddNodeChild ? (
               <button
+                type="button"
                 id="addChildEl"
                 className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                 label="Add Child"
@@ -134,6 +140,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
             {parent.isRemoveNode ? (
               <button
+                type="button"
                 id="deleteEl"
                 className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                 label="Delete"
@@ -145,6 +152,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
             {parent.isInfoNode ? (
               <button
+                type="button"
                 className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                 label="Alert"
                 onClick={() => handleOpenPopupInfo(parent.id)}
@@ -159,11 +167,12 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         child.name = child.name ? child.name : child.title;
         if (child.parentId == parent.id) {
           child.title = (
-            <div className="flex items-center">
+            <div className="flex items-center justify-between">
               <div>{child.name}</div>
-              <div className="ml-10">
+              <div className="ml-10 text-sm">
                 {child.isAddNodeChild ? (
                   <button
+                    type="button"
                     id="addChildEl"
                     className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Add Child"
@@ -175,6 +184,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
                 {child.isRemoveNode ? (
                   <button
+                    type="button"
                     id="deleteEl"
                     className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
                     label="Delete"
@@ -186,6 +196,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
                 {child.isInfoNode ? (
                   <button
+                    type="button"
                     className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
                     label="Alert"
                     onClick={() => handleOpenPopupInfo(parent.id)}
@@ -206,6 +217,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     });
     return dataParse;
   };
+
   useEffect(() => {
     listRowinfo.current = [];
   }, []);
@@ -213,6 +225,13 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   useEffect(() => {
     handleRenderIcon();
   }, [listRowinfo, treeData]);
+
+  useEffect(() => {
+    if (!compareArrays(treeData, treeDataPrev)) {
+      handleRenderIcon();
+      console.log("xicalo");
+    }
+  }, [compareArrays]);
 
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
@@ -443,17 +462,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   const expandAll = () => {
     expand(true);
-    handleRenderIcon();
   };
 
   const collapseAll = () => {
     expand(false);
-    handleRenderIcon();
   };
-
-  useEffect(() => {
-    handleRenderIcon();
-  }, [expand]);
 
   // const alertNodeInfo = ({ node, path, treeIndex }) => {
   //   const objectString = Object.keys(node)
@@ -562,7 +575,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   };
 
   return (
-    <div className="lg:ml-16 md:ml-10">
+    <div className="">
       <HeaderSidebarManagement
         expandAll={expandAll}
         collapseAll={collapseAll}
@@ -584,10 +597,10 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         setTreeDataUpdate={setTreeDataUpdate}
         isChangeTree={isChangeTree}
         deParseData={deParseData}
+        searchNode={searchNode}
+        setSearchNode={setSearchNode}
       />
-      <div
-        style={{ height: "100vh", position: "relative", marginLeft: "20px" }}
-      >
+      <div className="h-[100vh] relative mx-auto bg-red-100">
         {!isLoading ? (
           <SortableTree
             className="text-center mx-auto"
@@ -625,13 +638,17 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
                 handleCatchRowInfoGenerate(rowInfo);
               }
 
-              if (rowInfo) {
-                const collapseButton = document.getElementsByClassName(
-                  "rst__collapseButton"
-                );
-                if (collapseButton[rowInfo.treeIndex]) {
-                  collapseButton[rowInfo.treeIndex].onClick =
-                    handleRenderIcon();
+              if (rowInfo.treeIndex) {
+                const moveHandle =
+                  document.getElementsByClassName("rst__moveHandle");
+                if (moveHandle[rowInfo.treeIndex]) {
+                  moveHandle[
+                    rowInfo.treeIndex
+                  ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
+
+                  moveHandle[
+                    rowInfo.treeIndex
+                  ].style.backgroundSize = `32px 32px`;
                 }
               }
 
