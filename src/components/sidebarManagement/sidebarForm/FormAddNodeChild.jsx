@@ -119,8 +119,6 @@ const FormAddNodeChild = ({
     setInputIconURL(value);
   };
 
-  console.log("formValue", formValue);
-
   return (
     <div>
       {isOpenFormAddNodeChild ? (

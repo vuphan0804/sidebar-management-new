@@ -29,6 +29,7 @@ const HeaderSidebarManagement = ({
   const [input, setInput] = useState("");
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
+  const [isChangeSearch, setIsChangeSearch] = useState(false);
 
   const callbackUpdateNode = useCallback(async () => {
     const nodeUpdate = {
@@ -142,7 +143,6 @@ const HeaderSidebarManagement = ({
       .then((msgSuccess) => fetchSidebars())
       .catch(() => showToastMessageError("Save error!"))
       .catch((error) => console.log("error", error));
-    console.log("originalDataAll", originalDataAll);
   };
 
   const updateHandler = async () => {
@@ -163,12 +163,34 @@ const HeaderSidebarManagement = ({
     setIsOpenFormAddNode(false);
   };
 
+  const handleSearchNode = (e) => {
+    if (e.key === "Enter") {
+      setSearchNode(e.target.value);
+    }
+  };
+
+  const handleChangeInputSearch = (e) => {
+    if (e.target.value !== "") {
+      setIsChangeSearch(true);
+    } else {
+      setIsChangeSearch(false);
+      setSearchNode("");
+    }
+    if (searchNode) {
+      setIsChangeSearch(true);
+    }
+  };
+
+  const handleClear = () => {
+    setIsChangeSearch(false);
+  };
+
   return (
     <div className="mt-32" style={{ flex: "0 0 auto", padding: "0 15px" }}>
       <h3 className="text-3xl hello font-medium text-center mb-5">
         Sidebar Management
       </h3>
-      <form
+      {/* <form
         className=""
         onSubmit={(event) => {
           event.preventDefault();
@@ -207,24 +229,35 @@ const HeaderSidebarManagement = ({
           {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /
           {searchFoundCount || 0}
         </span>
-      </form>
+      </form> */}
+
       <form
-        className=""
         onSubmit={(event) => {
           event.preventDefault();
         }}
       >
-        <label htmlFor="find-box">
+        <label className="relative block ">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </span>
           <input
-            className="border rounded-md p-2 w-8/12"
-            id="find-box"
+            className="w-8/12 bg-white placeholder:font-italitc border border-slate-300 rounded-full py-2 pl-10 pr-4 focus:outline-none"
+            placeholder="Enter your node to search"
             type="text"
-            placeholder="Search node..."
-            value={searchNode}
-            onChange={(event) => setSearchNode(event.target.value)}
+            onKeyDown={(e) => handleSearchNode(e)}
+            onChange={(e) => handleChangeInputSearch(e)}
           />
+          {isChangeSearch ? (
+            <button
+              className="absolute inset-y-0 flex items-center right-1/3 mr-5"
+              onClick={(e) => handleClear(e)}
+            >
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+          ) : null}
         </label>
       </form>
+
       <div className="flex justify-start gap-4 text-white text-center my-5">
         <button
           className="p-2 px-3 flex justify-center items-center gap-2 bg-sky-600 rounded-md hover:bg-sky-700 transition-primary"

@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <div
-      className={`h-20 w-full z-50 text-white bg-slate-500 flex items-center justify-around fixed transition-primary ${headerFixed}`}
+      className={`h-20 w-full z-50 text-white bg-slate-500 flex items-center justify-between lg:px-32 px-5 fixed  transition-primary ${headerFixed}`}
     >
       <div className="text-3xl font-normal">VP</div>
       <div className="flex ">
@@ -26,11 +26,9 @@ const Header = () => {
           <Link to="/">Home</Link>
         </div>
         <div className="px-5">
-          {" "}
           <Link to="/">About</Link>
         </div>
         <div className="px-5">
-          {" "}
           <Link to="/">Contact</Link>
         </div>
       </div>

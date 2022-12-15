@@ -95,9 +95,7 @@ const FormUpdateNode = ({
     if (isOpenFormUpdate) {
       if (checkedIconURL) {
         // setInputIconURL(selectedSidebar.icon);
-        console.log("selectedSidebar.icon", selectedSidebar.icon);
       }
-      console.log("selectedSidebar.icon", selectedSidebar.node?.icon);
     }
   }, [isOpenFormUpdate]);
 
@@ -123,10 +121,6 @@ const FormUpdateNode = ({
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
   };
-
-  console.log("formValue", formValue);
-  console.log("checkedIconURL", checkedIconURL);
-  console.log("checkedIconLocal", checkedIconLocal);
 
   return (
     <div>
