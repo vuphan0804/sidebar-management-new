@@ -252,12 +252,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   const treeDataClone = _.cloneDeep(treeData);
 
   // findNode();
-  function searchTree(treeData, matchingName, dataNew) {
+  const searchTree = (treeData, matchingName, dataNew) => {
     for (let index = 0; index < treeData?.length; index++) {
-      let a = {};
       if (
-        treeData[index].name.search(matchingName) >= 0 &&
-        treeData[index].children.length === 0
+        treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
+        0
       ) {
         treeData[index].title = (
           <div className="flex items-center justify-between">
@@ -302,7 +301,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             </div>
           </div>
         );
-        a = treeData[index];
+        dataNew.push(treeData[index]);
       }
       if (treeData[index].children.length > 0) {
         for (let i = 0; i < treeData[index]?.children.length; i++) {
@@ -312,13 +311,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             []
           );
         }
-        if (treeData[index].children.length > 0)
-          a.children = treeData[index].children;
+        if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
       }
-      dataNew.push(a);
     }
     return dataNew;
-  }
+  };
 
   useEffect(() => {
     if (searchNode) {
@@ -326,7 +323,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     }
     handleRenderIcon();
   }, [searchNode]);
-  console.log("searchList", searchList);
+  // console.log("searchList", searchList);
 
   const removeNode = () => {
     let arrRemoveNode = [];
@@ -458,7 +455,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     setIsOpenFormIcon(false);
   };
 
-  console.log("searchNode", searchNode);
+  // console.log("searchNode", searchNode);
 
   return (
     <div className="">

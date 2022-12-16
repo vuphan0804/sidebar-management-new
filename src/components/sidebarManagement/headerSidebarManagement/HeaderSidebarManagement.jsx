@@ -163,26 +163,26 @@ const HeaderSidebarManagement = ({
     setIsOpenFormAddNode(false);
   };
 
-  const handleSearchNode = (e) => {
-    if (e.key === "Enter") {
-      setSearchNode(e.target.value);
-    }
-  };
+  // const handleSearchNode = (e) => {
+  //   if (e.key === "Enter") {
+  //     setSearchNode(e.target.value);
+  //     setIsChangeSearch(true);
+  //   }
+  // };
 
   const handleChangeInputSearch = (e) => {
+    setSearchNode(e.target.value);
     if (e.target.value !== "") {
       setIsChangeSearch(true);
     } else {
       setIsChangeSearch(false);
-      setSearchNode("");
     }
-    if (searchNode) {
-      setIsChangeSearch(true);
-    }
+    expandAll();
   };
 
   const handleClear = () => {
     setIsChangeSearch(false);
+    setSearchNode("");
   };
 
   return (
@@ -244,7 +244,8 @@ const HeaderSidebarManagement = ({
             className="w-8/12 bg-white placeholder:font-italitc border border-slate-300 rounded-full py-2 pl-10 pr-4 focus:outline-none"
             placeholder="Enter your node to search"
             type="text"
-            onKeyDown={(e) => handleSearchNode(e)}
+            value={searchNode}
+            // onKeyDown={(e) => handleSearchNode(e)}
             onChange={(e) => handleChangeInputSearch(e)}
           />
           {isChangeSearch ? (
