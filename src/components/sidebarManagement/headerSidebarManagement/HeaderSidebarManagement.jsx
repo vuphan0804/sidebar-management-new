@@ -22,8 +22,6 @@ const HeaderSidebarManagement = ({
   searchNode,
   setSearchNode,
 }) => {
-  const [updateSidebar, setUpdateSidebar] = useState(selectedSidebar); //rowInfo
-  const [input, setInput] = useState("");
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
   const [isChangeSearch, setIsChangeSearch] = useState(false);
@@ -51,11 +49,6 @@ const HeaderSidebarManagement = ({
       .catch(() => showToastMessageError("Add node error!"))
       .catch((error) => console.log("error", error));
   }, [treeDataAddNode]);
-
-  useEffect(() => {
-    setUpdateSidebar(selectedSidebar);
-    setInput(selectedSidebar?.node?.title || "");
-  }, [selectedSidebar]);
 
   useEffect(() => {
     setOriginalDataAll(deParseData(treeDataUpdateAll, []));
@@ -144,17 +137,17 @@ const HeaderSidebarManagement = ({
         Sidebar Management
       </h3>
       {/* <form
-        className=""
+        style={{ display: "inline-block" }}
         onSubmit={(event) => {
           event.preventDefault();
         }}
       >
         <label htmlFor="find-box">
           <input
-            className="border rounded-md p-2 w-8/12"
+            className="border rounded-md p-2"
             id="find-box"
             type="text"
-            placeholder="Search..."
+            placeholder="Search"
             value={searchString}
             onChange={(event) => setSearchString(event.target.value)}
           />
@@ -179,7 +172,9 @@ const HeaderSidebarManagement = ({
         </button>
 
         <span>
-          {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /
+          &nbsp;
+          {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
+          &nbsp;/&nbsp;
           {searchFoundCount || 0}
         </span>
       </form> */}
@@ -189,12 +184,12 @@ const HeaderSidebarManagement = ({
           event.preventDefault();
         }}
       >
-        <label className="relative block ">
+        <label className="relative block">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3">
             <i className="fa-solid fa-magnifying-glass"></i>
           </span>
           <input
-            className="w-8/12 bg-white placeholder:font-italitc border border-slate-300 rounded-full py-2 pl-10 pr-4 focus:outline-none"
+            className="w-1/2 xl:1/3 bg-white placeholder:font-italitc border border-slate-300 rounded-full py-2 pl-10 pr-4 focus:outline-none transition-primary"
             placeholder="Enter your node to search"
             type="text"
             value={searchNode}
@@ -203,7 +198,7 @@ const HeaderSidebarManagement = ({
           />
           {isChangeSearch ? (
             <button
-              className="absolute inset-y-0 flex items-center right-1/3 mr-5"
+              className="absolute inset-y-0 flex items-center right-1/2 mr-5"
               onClick={(e) => handleClear(e)}
             >
               <i className="fa-solid fa-xmark"></i>
@@ -212,7 +207,7 @@ const HeaderSidebarManagement = ({
         </label>
       </form>
 
-      <div className="flex justify-start gap-4 text-white text-center my-5">
+      <div className="flex justify-start gap-4 text-white text-center my-5 transition-primary">
         <button
           className="p-2 px-3 flex justify-center items-center gap-2 bg-sky-600 rounded-md hover:bg-sky-700 transition-primary"
           onClick={handleOpenFormAddNode}
