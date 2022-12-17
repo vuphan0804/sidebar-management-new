@@ -16,6 +16,8 @@ const FormAddNode = ({
     isAddNodeChild: false,
     isRemoveNode: false,
     isInfoNode: false,
+    isIconLocal: false,
+    isIconURL: false,
   });
 
   const [checkedIconURL, setCheckedIconURL] = useState(false);
@@ -40,6 +42,8 @@ const FormAddNode = ({
       isAddNodeChild: formValue.isAddNodeChild,
       isRemoveNode: formValue.isRemoveNode,
       isInfoNode: formValue.isInfoNode,
+      isIconLocal: formValue.isIconLocal,
+      isIconURL: formValue.isIconURL,
     };
     if (nodeAdd) {
       await sidebarAPI
@@ -53,25 +57,61 @@ const FormAddNode = ({
   }, [formValue]);
 
   useEffect(() => {
-    if (!checkedIconLocal && !checkedIconURL) {
+    if (!formValue.isIconLocal && !formValue.isIconURL) {
       setFormValue((prev) => ({
         ...prev,
         icon: "",
       }));
     }
-    if (checkedIconLocal) {
+  }, [formValue.isIconLocal, formValue.isIconURL]);
+
+  useEffect(() => {
+    if (formValue.isIconLocal) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconLocal,
       }));
     }
-    if (checkedIconURL) {
+  }, [formValue.isIconLocal, inputIconLocal]);
+
+  useEffect(() => {
+    if (formValue.isIconURL) {
       setFormValue((prev) => ({
         ...prev,
         icon: inputIconURL,
       }));
     }
-  }, [checkedIconLocal, checkedIconURL, inputIconURL]);
+  }, [formValue.isIconURL, inputIconURL]);
+
+  useEffect(
+    () => {
+      if (formValue.isIconLocal) {
+        setFormValue((prev) => {
+          return {
+            ...prev,
+            isIconURL: false,
+          };
+        });
+      }
+    },
+    [formValue.isIconLocal],
+    inputIconLocal
+  );
+
+  useEffect(
+    () => {
+      if (formValue.isIconURL) {
+        setFormValue((prev) => {
+          return {
+            ...prev,
+            isIconLocal: false,
+          };
+        });
+      }
+    },
+    [formValue.isIconURL],
+    inputIconURL
+  );
 
   useEffect(() => {
     if (!isOpenFormAddNode) {
@@ -82,22 +122,14 @@ const FormAddNode = ({
       formValue.isAddNodeChild = false;
       formValue.isRemoveNode = false;
       formValue.isInfoNode = false;
+      formValue.isIconLocal = false;
+      formValue.isIconURL = false;
       setInputIconLocal("");
       setInputIconURL("");
       setCheckedIconLocal(false);
       setCheckedIconURL(false);
     }
   }, [isOpenFormAddNode]);
-
-  const handleCheckedIconLocal = () => {
-    setCheckedIconURL(false);
-    setCheckedIconLocal((state) => !state);
-  };
-
-  const handleCheckedIconURL = () => {
-    setCheckedIconLocal(false);
-    setCheckedIconURL((state) => !state);
-  };
 
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
@@ -177,12 +209,12 @@ const FormAddNode = ({
                       <input
                         className="mr-2"
                         type="checkbox"
-                        name=""
+                        name="isIconLocal"
                         id="checkedIconLocal"
-                        checked={checkedIconLocal}
-                        onChange={(e) => {
-                          handleCheckedIconLocal(e);
-                        }}
+                        checked={formValue.isIconLocal}
+                        onChange={(e) =>
+                          handleChange(e.target.name, e.target.checked)
+                        }
                       />
                       Icon
                     </label>
@@ -190,7 +222,7 @@ const FormAddNode = ({
                       {icons.map((iconz, index) => {
                         return (
                           <button
-                            disabled={!checkedIconLocal}
+                            disabled={!formValue.isIconLocal}
                             className="bg-slate-300 hover:outline outline-orange-300 focus:outline m-1 w-10 h-10 rounded-md text-center mx-auto"
                             type="button"
                             key={index}
@@ -238,10 +270,12 @@ const FormAddNode = ({
                       <input
                         className="mr-2"
                         type="checkbox"
-                        name=""
+                        name="isIconURL"
                         id="checkedIconURL"
-                        checked={checkedIconURL}
-                        onChange={(e) => handleCheckedIconURL(e)}
+                        checked={formValue.isIconURL}
+                        onChange={(e) =>
+                          handleChange(e.target.name, e.target.checked)
+                        }
                       />
                       Icon URL
                     </label>
@@ -250,7 +284,7 @@ const FormAddNode = ({
                       type="text"
                       name="iconURL"
                       id="iconURL"
-                      disabled={!checkedIconURL}
+                      disabled={!formValue.isIconURL}
                       value={inputIconURL}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       placeholder="iconURL"

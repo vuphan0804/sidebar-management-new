@@ -243,16 +243,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     });
     return data;
   };
-  // console.log("treeData", originalData);
-  // const findNode = () => {
-  //   const filterResult = originalData?.filter((e) => e?.name.includes("m"));
-  //   console.log("filterResult", filterResult);
-  // };
 
+  // Search node
   const treeDataClone = _.cloneDeep(treeData);
 
-  // findNode();
-  const searchTree = (treeData, matchingName, dataNew) => {
+  const searchTree = (treeData, matchingName, dataNew, ab) => {
     for (let index = 0; index < treeData?.length; index++) {
       if (
         treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
@@ -301,17 +296,15 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             </div>
           </div>
         );
-        dataNew.push(treeData[index]);
+        ab++;
+        dataNew.push({ ...treeData[index], children: [] });
       }
       if (treeData[index].children.length > 0) {
+        let a = {};
         for (let i = 0; i < treeData[index]?.children.length; i++) {
-          treeData[index].children = searchTree(
-            treeData[index].children,
-            matchingName,
-            []
-          );
+          a = searchTree(treeData[index].children, matchingName, []);
         }
-        if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
+        if (treeData[index].children.length > 0) dataNew.push(a);
       }
     }
     return dataNew;
@@ -319,11 +312,12 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   useEffect(() => {
     if (searchNode) {
-      setSearchList(searchTree(treeDataClone, searchNode, []));
+      setSearchList(searchTree(treeDataClone, searchNode, [], 0));
     }
     handleRenderIcon();
   }, [searchNode]);
-  // console.log("searchList", searchList);
+
+  console.log("searchList", searchList);
 
   const removeNode = () => {
     let arrRemoveNode = [];

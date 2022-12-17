@@ -64,6 +64,10 @@ const FormUpdateNode = ({
 
   useEffect(() => {
     if (selectedSidebar) {
+      if (selectedSidebar.node.isIconLocal)
+        setInputIconLocal(selectedSidebar.node.icon);
+      if (selectedSidebar.node.isIconURL)
+        setInputIconURL(selectedSidebar.node.icon);
       setFormValue(selectedSidebar?.node);
     }
   }, [selectedSidebar]);
@@ -75,14 +79,6 @@ const FormUpdateNode = ({
       console.log("!isOpenFormUpdate");
     }
   }, [isOpenFormUpdate]);
-
-  // useEffect(() => {
-  //   if (isOpenFormUpdate) {
-  //     if (formValue.isIconLocal) {
-  //       setInputIconLocal(selectedSidebar?.node.icon);
-  //     }
-  //   }
-  // }, [isOpenFormUpdate]);
 
   // setFormValue when check
 
@@ -102,7 +98,7 @@ const FormUpdateNode = ({
         icon: inputIconLocal,
       }));
     }
-  }, [inputIconLocal]);
+  }, [formValue.isIconLocal, inputIconLocal]);
 
   useEffect(() => {
     if (formValue.isIconURL) {
@@ -111,45 +107,39 @@ const FormUpdateNode = ({
         icon: inputIconURL,
       }));
     }
-  }, [inputIconURL]);
-
-  // useEffect(() => {
-  //   if (formValue.isIconLocal) {
-  //     setInputIconLocal(selectedSidebar?.node.icon);
-  //   }
-  // }, [formValue.isIconLocal]);
-
-  // useEffect(() => {
-  //   if (formValue.isIconURL) {
-  //     setInputIconURL(selectedSidebar?.node.icon);
-  //   }
-  // }, [formValue.isIconURL]);
+  }, [formValue.isIconURL, inputIconURL]);
 
   // Icon check
 
-  useEffect(() => {
-    if (formValue.isIconLocal) {
-      setFormValue((prev) => {
-        return {
-          ...prev,
-          isIconURL: false,
-        };
-      });
-    }
-  }, [formValue.isIconLocal]);
+  useEffect(
+    () => {
+      if (formValue.isIconLocal) {
+        setFormValue((prev) => {
+          return {
+            ...prev,
+            isIconURL: false,
+          };
+        });
+      }
+    },
+    [formValue.isIconLocal],
+    inputIconLocal
+  );
 
-  useEffect(() => {
-    if (formValue.isIconURL) {
-      setFormValue((prev) => {
-        return {
-          ...prev,
-          isIconLocal: false,
-        };
-      });
-    }
-  }, [formValue.isIconURL]);
-
-  console.log("isOpenFormUpdate", isOpenFormUpdate);
+  useEffect(
+    () => {
+      if (formValue.isIconURL) {
+        setFormValue((prev) => {
+          return {
+            ...prev,
+            isIconLocal: false,
+          };
+        });
+      }
+    },
+    [formValue.isIconURL],
+    inputIconURL
+  );
 
   const handleChange = (name, value) => {
     setFormValue((prev) => {
@@ -163,12 +153,6 @@ const FormUpdateNode = ({
   const handleChangeIconURL = (value) => {
     setInputIconURL(value);
   };
-
-  console.log("formValue", formValue);
-  console.log("inputIconURL", inputIconURL);
-  console.log("inputIconLocal", inputIconLocal);
-  console.log("isIconLocal", formValue.isIconLocal);
-  console.log("isIconURL", formValue.isIconURL);
 
   return (
     <div>

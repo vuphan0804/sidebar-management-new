@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import FormAddNode from "../sidebarForm/FormAddNode";
 
 const HeaderSidebarManagement = ({
-  updateNode,
   expandAll,
   collapseAll,
   searchString,
@@ -16,9 +15,7 @@ const HeaderSidebarManagement = ({
   selectedSidebar,
   fetchSidebars,
   treeDataUpdateAll,
-  treeDataUpdateNode,
   treeDataAddNode,
-  treeDataAddNodeChild,
   treeDataRemoveNode,
   isChangeTree,
   deParseData,
@@ -30,24 +27,6 @@ const HeaderSidebarManagement = ({
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
   const [isChangeSearch, setIsChangeSearch] = useState(false);
-
-  const callbackUpdateNode = useCallback(async () => {
-    const nodeUpdate = {
-      title: treeDataUpdateNode.title,
-      expanded: treeDataUpdateNode.expanded,
-      parentId: treeDataUpdateNode.parentId,
-      id: treeDataUpdateNode.id,
-      count: treeDataUpdateNode.count,
-    };
-    if (nodeUpdate.id) {
-      await sidebarAPI
-        .updateSidebar(nodeUpdate.id, nodeUpdate)
-        .then(() => showToastMessageSuccess("Update node successfully!"))
-        .then((msgSuccess) => fetchSidebars())
-        .catch(() => showToastMessageError("Update node error!"))
-        .catch((error) => console.log("error", error));
-    }
-  }, [treeDataUpdateNode]);
 
   const callbackRemoveNode = useCallback(async () => {
     if (treeDataRemoveNode.length !== 0) {
@@ -73,16 +52,6 @@ const HeaderSidebarManagement = ({
       .catch((error) => console.log("error", error));
   }, [treeDataAddNode]);
 
-  const callbackAddNodeChild = useCallback(async () => {
-    Promise.all(
-      treeDataAddNodeChild.map(async (e) => await sidebarAPI.addSidebar(e))
-    )
-      // .then(() => showToastMessageSuccess("Add node child successfully!"))
-      .then((msgSuccess) => fetchSidebars())
-      .catch(() => showToastMessageError("Add node child error!"))
-      .catch((error) => console.log("error", error));
-  }, [treeDataAddNodeChild]);
-
   useEffect(() => {
     setUpdateSidebar(selectedSidebar);
     setInput(selectedSidebar?.node?.title || "");
@@ -100,16 +69,6 @@ const HeaderSidebarManagement = ({
   useEffect(() => {
     callbackAddNode();
   }, [treeDataAddNode]);
-
-  // Add Node Child
-  useEffect(() => {
-    callbackAddNodeChild();
-  }, [treeDataAddNodeChild]);
-
-  // Update Node
-  useEffect(() => {
-    callbackUpdateNode();
-  }, [treeDataUpdateNode]);
 
   // Remove Node
   useEffect(() => {
@@ -143,12 +102,6 @@ const HeaderSidebarManagement = ({
       .then((msgSuccess) => fetchSidebars())
       .catch(() => showToastMessageError("Save error!"))
       .catch((error) => console.log("error", error));
-  };
-
-  const updateHandler = async () => {
-    if (updateSidebar) {
-      updateNode(updateSidebar, input);
-    }
   };
 
   const reloadPage = () => {
