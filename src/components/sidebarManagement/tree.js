@@ -29,6 +29,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     [popupInfo, setPopupInfo] = useState([]),
     [treeDataPrev, setTreeDataPrev] = useState([treeData]),
     [searchNode, setSearchNode] = useState(""),
+    [searchNodeFocus, setSearchNodeFocus] = useState(""),
     [searchString, setSearchString] = useState("");
   const [searchList, setSearchList] = useState([]);
 
@@ -247,7 +248,70 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   // Search node
   const treeDataClone = _.cloneDeep(treeData);
 
-  const searchTree = (treeData, matchingName, dataNew, ab) => {
+  // const searchTree = (treeData, matchingName, dataNew, ab) => {
+  //   for (let index = 0; index < treeData?.length; index++) {
+  //     if (
+  //       treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
+  //       0
+  //     ) {
+  //       treeData[index].title = (
+  //         <div className="flex items-center justify-between">
+  //           <div className="whitespace-nowrap bg-red-100">
+  //             {treeData[index].name}
+  //           </div>
+  //           <div className="ml-10 text-sm">
+  //             {treeData[index].isAddNodeChild ? (
+  //               <button
+  //                 type="button"
+  //                 id="addChildEl"
+  //                 className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+  //                 label="Add Child"
+  //                 onClick={() => handleOpenFormAddNodeChild(treeData[index].id)}
+  //               >
+  //                 <i className="fa-solid fa-plus"></i>
+  //               </button>
+  //             ) : null}
+
+  //             {treeData[index].isRemoveNode ? (
+  //               <button
+  //                 type="button"
+  //                 id="deleteEl"
+  //                 className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+  //                 label="Delete"
+  //                 onClick={() => handleOpenFormDelete(treeData[index].id)}
+  //               >
+  //                 <i className="fa-sharp fa-solid fa-trash"></i>
+  //               </button>
+  //             ) : null}
+
+  //             {treeData[index].isInfoNode ? (
+  //               <button
+  //                 type="button"
+  //                 className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+  //                 label="Alert"
+  //                 onClick={() => handleOpenPopupInfo(treeData[index].id)}
+  //               >
+  //                 <i className="fa-sharp fa-solid fa-circle-info"></i>
+  //               </button>
+  //             ) : null}
+  //           </div>
+  //         </div>
+  //       );
+  //       ab++;
+  //       dataNew.push({ ...treeData[index], children: [] });
+  //     }
+  //     if (treeData[index].children.length > 0) {
+  //       let a = {};
+  //       for (let i = 0; i < treeData[index]?.children.length; i++) {
+  //         a = searchTree(treeData[index].children, matchingName, []);
+  //       }
+  //       if (treeData[index].children.length > 0) dataNew.push(a);
+  //     }
+  //   }
+  //   return dataNew;
+  // };
+
+  const searchTree = (treeData, matchingName, dataNew) => {
     for (let index = 0; index < treeData?.length; index++) {
       if (
         treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
@@ -296,28 +360,129 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             </div>
           </div>
         );
-        ab++;
-        dataNew.push({ ...treeData[index], children: [] });
+        dataNew.push(treeData[index]);
       }
       if (treeData[index].children.length > 0) {
-        let a = {};
         for (let i = 0; i < treeData[index]?.children.length; i++) {
-          a = searchTree(treeData[index].children, matchingName, []);
+          treeData[index].children = searchTree(
+            treeData[index].children,
+            matchingName,
+            []
+          );
         }
-        if (treeData[index].children.length > 0) dataNew.push(a);
+        if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
+      }
+    }
+    return dataNew;
+  };
+
+  // useEffect(() => {
+  //   if (searchNode) {
+  //     setSearchList(searchTree(treeDataClone, searchNode, [], 0));
+  //   }
+  //   handleRenderIcon();
+  // }, [searchNode]);
+
+  useEffect(() => {
+    if (searchNode) {
+      setSearchList(searchTree(treeDataClone, searchNode, []));
+    }
+    handleRenderIcon();
+  }, [searchNode]);
+
+  console.log("searchList", searchList);
+
+  // const getNodeFocus = (tree, target) => {
+  //   if (tree.name === target) {
+  //     return tree.name;
+  //   }
+
+  //   for (const child of tree.children) {
+  //     const found = getNodeFocus(child, target);
+
+  //     if (found) {
+  //       return found;
+  //     }
+  //   }
+  // };
+
+  const getNodeFocus = (treeData, matchingName, dataNew) => {
+    for (let index = 0; index < treeData?.length; index++) {
+      if (
+        treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
+        0
+      ) {
+        treeData[index].title = (
+          <div className="flex items-center justify-between">
+            <div className="whitespace-nowrap bg-red-100">
+              {treeData[index].name}
+            </div>
+            <div className="ml-10 text-sm">
+              {treeData[index].isAddNodeChild ? (
+                <button
+                  type="button"
+                  id="addChildEl"
+                  className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                  label="Add Child"
+                  onClick={() => handleOpenFormAddNodeChild(treeData[index].id)}
+                >
+                  <i className="fa-solid fa-plus"></i>
+                </button>
+              ) : null}
+
+              {treeData[index].isRemoveNode ? (
+                <button
+                  type="button"
+                  id="deleteEl"
+                  className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                  label="Delete"
+                  onClick={() => handleOpenFormDelete(treeData[index].id)}
+                >
+                  <i className="fa-sharp fa-solid fa-trash"></i>
+                </button>
+              ) : null}
+
+              {treeData[index].isInfoNode ? (
+                <button
+                  type="button"
+                  className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                  label="Alert"
+                  onClick={() => handleOpenPopupInfo(treeData[index].id)}
+                >
+                  <i className="fa-sharp fa-solid fa-circle-info"></i>
+                </button>
+              ) : null}
+            </div>
+          </div>
+        );
+        dataNew.push(treeData[index]);
+      }
+      if (treeData[index].children.length > 0) {
+        for (let i = 0; i < treeData[index]?.children.length; i++) {
+          treeData[index].children = getNodeFocus(
+            treeData[index].children,
+            matchingName,
+            []
+          );
+        }
+        if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
       }
     }
     return dataNew;
   };
 
   useEffect(() => {
-    if (searchNode) {
-      setSearchList(searchTree(treeDataClone, searchNode, [], 0));
+    if (searchNodeFocus) {
+      // setSearchList(getNodeFocus(treeDataClone, searchNodeFocus));
+      console.log(
+        "getNodeFocus(treeDataClone, searchNodeFocus)",
+        getNodeFocus(treeDataClone, searchNodeFocus)
+      );
     }
     handleRenderIcon();
-  }, [searchNode]);
+  }, [searchNodeFocus]);
 
-  console.log("searchList", searchList);
+  console.log("treeDataClone", treeDataClone);
 
   const removeNode = () => {
     let arrRemoveNode = [];
@@ -476,6 +641,8 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         deParseData={deParseData}
         searchNode={searchNode}
         setSearchNode={setSearchNode}
+        searchNodeFocus={searchNodeFocus}
+        setSearchNodeFocus={setSearchNodeFocus}
       />
       <div className="h-[100vh] relative mx-auto bg-red-100">
         {!isLoading ? (
