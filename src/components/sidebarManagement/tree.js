@@ -32,6 +32,11 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     [searchNodeFocus, setSearchNodeFocus] = useState(""),
     [searchString, setSearchString] = useState("");
   const [searchList, setSearchList] = useState([]);
+  const [searchListFocus, setSearchListFocus] = useState([]);
+  const [treeDataListFocus, setTreeDataListFocus] = useState([]);
+  const [isSearchNode, setIsSearchNode] = useState(false);
+  const [currentSearch, setCurrentSearch] = useState("searchFocus");
+  // const [isSearchFocus, setIsSearchFocus] = useState(false);
 
   const [isOpenFormDelete, setIsOpenFormDelete] = useState(false),
     [isLoading, setIsLoading] = useState(true),
@@ -59,6 +64,20 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     ).filter((a) => a.parentId !== "");
     setTreeData(parseData(parentArr, childArr));
   }, [originalData]);
+
+  useEffect(() => {
+    const parentArr = _.sortBy(
+      originalData,
+      (obj) => parseInt(obj.count),
+      10
+    ).filter((a) => a.parentId === "");
+    const childArr = _.sortBy(
+      originalData,
+      (obj) => parseInt(obj.count),
+      10
+    ).filter((a) => a.parentId !== "");
+    setTreeDataListFocus(parseDataFocus(parentArr, childArr));
+  }, [searchNodeFocus, searchListFocus]);
 
   useEffect(() => {
     setTreeDataPrev(data);
@@ -100,6 +119,19 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     } else {
       setIsChangeTree(true);
     }
+    const moveHandle = document.getElementsByClassName("rst__moveHandle");
+    for (let index = 0; index < moveHandle.length; index++) {
+      let temp =
+        moveHandle[index].parentElement.getElementsByClassName("nodeflag");
+      const nodeFlagId = [].slice
+        .call(temp[0].classList)
+        .find((x) => x.startsWith("nodeid"))
+        .replace("nodeid", "");
+      moveHandle[index].style.background = `#d9d9d9  url(${
+        originalData.find((x) => x.id == nodeFlagId).icon
+      }) no-repeat center`;
+      moveHandle[index].style.backgroundSize = `32px 32px`;
+    }
   }, [treeData]);
 
   useEffect(() => {
@@ -110,6 +142,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         setIsLoading(false);
       }, 2000);
     } else setIsLoading(true);
+    // }, []);
   }, [treeData]);
 
   const parseData = (dataParse, childArr) => {
@@ -117,6 +150,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
       let childHaveChild = [];
       let childOnly = [];
       parent.name = parent.name ? parent.name : parent.title;
+
       parent.title = (
         <div className="flex items-center justify-between">
           <div className="whitespace-nowrap">{parent.name}</div>
@@ -213,19 +247,192 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     return dataParse;
   };
 
+  const parseDataFocus = (dataParse, childArr) => {
+    dataParse.forEach((parent) => {
+      let childHaveChild = [];
+      let childOnly = [];
+      parent.name = parent.name ? parent.name : parent.title;
+      const isSearchFocus = searchListFocus.includes(parent.id);
+      parent.title = isSearchFocus ? (
+        <div className="flex items-center justify-between">
+          <div className="whitespace-nowrap text-red-500">{parent.name}</div>
+          <div className="ml-10 text-sm">
+            {parent.isAddNodeChild ? (
+              <button
+                type="button"
+                id="addChildEl"
+                className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                label="Add Child"
+                onClick={() => handleOpenFormAddNodeChild(parent.id)}
+              >
+                <i className="fa-solid fa-plus"></i>
+              </button>
+            ) : null}
+
+            {parent.isRemoveNode ? (
+              <button
+                type="button"
+                id="deleteEl"
+                className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                label="Delete"
+                onClick={() => handleOpenFormDelete(parent.id)}
+              >
+                <i className="fa-sharp fa-solid fa-trash"></i>
+              </button>
+            ) : null}
+
+            {parent.isInfoNode ? (
+              <button
+                type="button"
+                className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                label="Alert"
+                onClick={() => handleOpenPopupInfo(parent.id)}
+              >
+                <i className="fa-sharp fa-solid fa-circle-info"></i>
+              </button>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <div className="whitespace-nowrap">{parent.name}</div>
+          <div className="ml-10 text-sm">
+            {parent.isAddNodeChild ? (
+              <button
+                type="button"
+                id="addChildEl"
+                className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                label="Add Child"
+                onClick={() => handleOpenFormAddNodeChild(parent.id)}
+              >
+                <i className="fa-solid fa-plus"></i>
+              </button>
+            ) : null}
+
+            {parent.isRemoveNode ? (
+              <button
+                type="button"
+                id="deleteEl"
+                className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                label="Delete"
+                onClick={() => handleOpenFormDelete(parent.id)}
+              >
+                <i className="fa-sharp fa-solid fa-trash"></i>
+              </button>
+            ) : null}
+
+            {parent.isInfoNode ? (
+              <button
+                type="button"
+                className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                label="Alert"
+                onClick={() => handleOpenPopupInfo(parent.id)}
+              >
+                <i className="fa-sharp fa-solid fa-circle-info"></i>
+              </button>
+            ) : null}
+          </div>
+        </div>
+      );
+      childArr.forEach((child) => {
+        child.name = child.name ? child.name : child.title;
+        const isSearchParentFocus = searchListFocus.includes(child.id);
+        if (child.parentId == parent.id) {
+          child.title = isSearchParentFocus ? (
+            <div className="flex items-center justify-between">
+              <div className="whitespace-nowrap bg-red-500">{child.name}</div>
+              <div className="ml-10 text-sm">
+                {child.isAddNodeChild ? (
+                  <button
+                    type="button"
+                    id="addChildEl"
+                    className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Add Child"
+                    onClick={() => handleOpenFormAddNodeChild(parent.id)}
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                ) : null}
+
+                {child.isRemoveNode ? (
+                  <button
+                    type="button"
+                    id="deleteEl"
+                    className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                    label="Delete"
+                    onClick={() => handleOpenFormDelete(parent.id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-trash"></i>
+                  </button>
+                ) : null}
+
+                {child.isInfoNode ? (
+                  <button
+                    type="button"
+                    className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Alert"
+                    onClick={() => handleOpenPopupInfo(parent.id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-circle-info"></i>
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div className="whitespace-nowrap">{child.name}</div>
+              <div className="ml-10 text-sm">
+                {child.isAddNodeChild ? (
+                  <button
+                    type="button"
+                    id="addChildEl"
+                    className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Add Child"
+                    onClick={() => handleOpenFormAddNodeChild(parent.id)}
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                ) : null}
+
+                {child.isRemoveNode ? (
+                  <button
+                    type="button"
+                    id="deleteEl"
+                    className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                    label="Delete"
+                    onClick={() => handleOpenFormDelete(parent.id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-trash"></i>
+                  </button>
+                ) : null}
+
+                {child.isInfoNode ? (
+                  <button
+                    type="button"
+                    className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Alert"
+                    onClick={() => handleOpenPopupInfo(parent.id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-circle-info"></i>
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          );
+          childHaveChild.push(child);
+        } else childOnly.push(child);
+      });
+      parent.children = childHaveChild;
+      if (parent.children.length > 0) {
+        return parseDataFocus(parent.children, childOnly);
+      }
+    });
+    return dataParse;
+  };
+
   useEffect(() => {
     listRowinfo.current = [];
   }, []);
-
-  useEffect(() => {
-    handleRenderIcon();
-  }, [listRowinfo, treeData]);
-
-  useEffect(() => {
-    if (!compareArrays(treeData, treeDataPrev)) {
-      handleRenderIcon();
-    }
-  }, [compareArrays]);
 
   const deParseData = (treeData, data) => {
     treeData?.forEach((parent, index) => {
@@ -310,67 +517,183 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   //   }
   //   return dataNew;
   // };
+  // const searchTree = (treeData, matchingName, dataNew) => {
+  //   for (let index = 0; index < treeData.length; index++) {
+  //     if (
+  //       treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
+  //       0
+  //     ) {
+  //       treeData[index].title = (
+  //         <div className="flex items-center justify-between">
+  //           <div className="whitespace-nowrap bg-red-100">
+  //             {treeData[index].name}
+  //           </div>
+  //           <div className="ml-10 text-sm">
+  //             {treeData[index].isAddNodeChild ? (
+  //               <button
+  //                 type="button"
+  //                 id="addChildEl"
+  //                 className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+  //                 label="Add Child"
+  //                 onClick={() => handleOpenFormAddNodeChild(treeData[index].id)}
+  //               >
+  //                 <i className="fa-solid fa-plus"></i>
+  //               </button>
+  //             ) : null}
+
+  //             {treeData[index].isRemoveNode ? (
+  //               <button
+  //                 type="button"
+  //                 id="deleteEl"
+  //                 className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+  //                 label="Delete"
+  //                 onClick={() => handleOpenFormDelete(treeData[index].id)}
+  //               >
+  //                 <i className="fa-sharp fa-solid fa-trash"></i>
+  //               </button>
+  //             ) : null}
+
+  //             {treeData[index].isInfoNode ? (
+  //               <button
+  //                 type="button"
+  //                 className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+  //                 label="Alert"
+  //                 onClick={() => handleOpenPopupInfo(treeData[index].id)}
+  //               >
+  //                 <i className="fa-sharp fa-solid fa-circle-info"></i>
+  //               </button>
+  //             ) : null}
+  //           </div>
+  //         </div>
+  //       );
+  //       dataNew.push(treeData[index]);
+  //     }
+  //     if (treeData[index].children.length > 0) {
+  //       for (let i = 0; i < treeData[index]?.children.length; i++) {
+  //         treeData[index].children = searchTree(
+  //           treeData[index].children,
+  //           matchingName,
+  //           []
+  //         );
+  //       }
+  //       // if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
+  //     }
+  //   }
+  //   ''.search
+  //   return dataNew;
+  // };
 
   const searchTree = (treeData, matchingName, dataNew) => {
-    for (let index = 0; index < treeData?.length; index++) {
-      if (
-        treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
-        0
-      ) {
-        treeData[index].title = (
-          <div className="flex items-center justify-between">
-            <div className="whitespace-nowrap bg-red-100">
-              {treeData[index].name}
-            </div>
-            <div className="ml-10 text-sm">
-              {treeData[index].isAddNodeChild ? (
-                <button
-                  type="button"
-                  id="addChildEl"
-                  className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
-                  label="Add Child"
-                  onClick={() => handleOpenFormAddNodeChild(treeData[index].id)}
-                >
-                  <i className="fa-solid fa-plus"></i>
-                </button>
-              ) : null}
-
-              {treeData[index].isRemoveNode ? (
-                <button
-                  type="button"
-                  id="deleteEl"
-                  className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
-                  label="Delete"
-                  onClick={() => handleOpenFormDelete(treeData[index].id)}
-                >
-                  <i className="fa-sharp fa-solid fa-trash"></i>
-                </button>
-              ) : null}
-
-              {treeData[index].isInfoNode ? (
-                <button
-                  type="button"
-                  className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
-                  label="Alert"
-                  onClick={() => handleOpenPopupInfo(treeData[index].id)}
-                >
-                  <i className="fa-sharp fa-solid fa-circle-info"></i>
-                </button>
-              ) : null}
-            </div>
-          </div>
-        );
-        dataNew.push(treeData[index]);
-      }
+    for (let index = 0; index < treeData.length; index++) {
       if (treeData[index].children.length > 0) {
-        for (let i = 0; i < treeData[index]?.children.length; i++) {
-          treeData[index].children = searchTree(
-            treeData[index].children,
-            matchingName,
-            []
+        treeData[index].children = searchTree(
+          treeData[index].children,
+          matchingName,
+          []
+        );
+      } // if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
+      if (
+        treeData[index].children.length > 0 ||
+        treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
+          0
+      ) {
+        if (
+          treeData[index].children.length > 0 &&
+          treeData[index].name
+            .toLowerCase()
+            .search(matchingName.toLowerCase()) < 0
+        ) {
+          treeData[index].title = (
+            <div className="flex items-center justify-between">
+              <div className="whitespace-nowrap">{treeData[index].name}</div>
+              <div className="ml-10 text-sm">
+                {treeData[index].isAddNodeChild ? (
+                  <button
+                    type="button"
+                    id="addChildEl"
+                    className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Add Child"
+                    onClick={() =>
+                      handleOpenFormAddNodeChild(treeData[index].id)
+                    }
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                ) : null}
+
+                {treeData[index].isRemoveNode ? (
+                  <button
+                    type="button"
+                    id="deleteEl"
+                    className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                    label="Delete"
+                    onClick={() => handleOpenFormDelete(treeData[index].id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-trash"></i>
+                  </button>
+                ) : null}
+
+                {treeData[index].isInfoNode ? (
+                  <button
+                    type="button"
+                    className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Alert"
+                    onClick={() => handleOpenPopupInfo(treeData[index].id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-circle-info"></i>
+                  </button>
+                ) : null}
+              </div>
+            </div>
           );
-        }
-        if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
+        } else
+          treeData[index].title = (
+            <div className="flex items-center justify-between">
+              <div className="whitespace-nowrap bg-red-100">
+                {treeData[index].name}
+              </div>
+              <div className="ml-10 text-sm">
+                {treeData[index].isAddNodeChild ? (
+                  <button
+                    type="button"
+                    id="addChildEl"
+                    className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Add Child"
+                    onClick={() =>
+                      handleOpenFormAddNodeChild(treeData[index].id)
+                    }
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                ) : null}
+
+                {treeData[index].isRemoveNode ? (
+                  <button
+                    type="button"
+                    id="deleteEl"
+                    className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
+                    label="Delete"
+                    onClick={() => handleOpenFormDelete(treeData[index].id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-trash"></i>
+                  </button>
+                ) : null}
+
+                {treeData[index].isInfoNode ? (
+                  <button
+                    type="button"
+                    className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
+                    label="Alert"
+                    onClick={() => handleOpenPopupInfo(treeData[index].id)}
+                  >
+                    <i className="fa-sharp fa-solid fa-circle-info"></i>
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          );
+
+        dataNew.push(treeData[index]);
       }
     }
     return dataNew;
@@ -380,31 +703,13 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
   //   if (searchNode) {
   //     setSearchList(searchTree(treeDataClone, searchNode, [], 0));
   //   }
-  //   handleRenderIcon();
   // }, [searchNode]);
 
   useEffect(() => {
     if (searchNode) {
-      setSearchList(searchTree(treeDataClone, searchNode, []));
+      setSearchList(searchTree([...(treeDataClone ?? [])], searchNode, []));
     }
-    handleRenderIcon();
   }, [searchNode]);
-
-  console.log("searchList", searchList);
-
-  // const getNodeFocus = (tree, target) => {
-  //   if (tree.name === target) {
-  //     return tree.name;
-  //   }
-
-  //   for (const child of tree.children) {
-  //     const found = getNodeFocus(child, target);
-
-  //     if (found) {
-  //       return found;
-  //     }
-  //   }
-  // };
 
   const getNodeFocus = (treeData, matchingName, dataNew) => {
     for (let index = 0; index < treeData?.length; index++) {
@@ -412,60 +717,12 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         treeData[index].name.toLowerCase().search(matchingName.toLowerCase()) >=
         0
       ) {
-        treeData[index].title = (
-          <div className="flex items-center justify-between">
-            <div className="whitespace-nowrap bg-red-100">
-              {treeData[index].name}
-            </div>
-            <div className="ml-10 text-sm">
-              {treeData[index].isAddNodeChild ? (
-                <button
-                  type="button"
-                  id="addChildEl"
-                  className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
-                  label="Add Child"
-                  onClick={() => handleOpenFormAddNodeChild(treeData[index].id)}
-                >
-                  <i className="fa-solid fa-plus"></i>
-                </button>
-              ) : null}
-
-              {treeData[index].isRemoveNode ? (
-                <button
-                  type="button"
-                  id="deleteEl"
-                  className="px-2 py-1 mx-2 text-red-400 border-2 border-red-400 hover:text-white hover:bg-red-500 hover:border-red-500 rounded-full transition-primary"
-                  label="Delete"
-                  onClick={() => handleOpenFormDelete(treeData[index].id)}
-                >
-                  <i className="fa-sharp fa-solid fa-trash"></i>
-                </button>
-              ) : null}
-
-              {treeData[index].isInfoNode ? (
-                <button
-                  type="button"
-                  className="px-2 py-1 mx-2 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"
-                  label="Alert"
-                  onClick={() => handleOpenPopupInfo(treeData[index].id)}
-                >
-                  <i className="fa-sharp fa-solid fa-circle-info"></i>
-                </button>
-              ) : null}
-            </div>
-          </div>
-        );
-        dataNew.push(treeData[index]);
+        dataNew.push(treeData[index].id);
       }
       if (treeData[index].children.length > 0) {
-        for (let i = 0; i < treeData[index]?.children.length; i++) {
-          treeData[index].children = getNodeFocus(
-            treeData[index].children,
-            matchingName,
-            []
-          );
-        }
-        if (treeData[index].children.length > 0) dataNew.push(treeData[index]);
+        dataNew.push(
+          ...getNodeFocus(treeData[index].children, matchingName, [])
+        );
       }
     }
     return dataNew;
@@ -473,16 +730,9 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   useEffect(() => {
     if (searchNodeFocus) {
-      // setSearchList(getNodeFocus(treeDataClone, searchNodeFocus));
-      console.log(
-        "getNodeFocus(treeDataClone, searchNodeFocus)",
-        getNodeFocus(treeDataClone, searchNodeFocus)
-      );
+      setSearchListFocus(getNodeFocus(treeDataClone, searchNodeFocus, []));
     }
-    handleRenderIcon();
   }, [searchNodeFocus]);
-
-  console.log("treeDataClone", treeDataClone);
 
   const removeNode = () => {
     let arrRemoveNode = [];
@@ -502,6 +752,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   const updateTreeData = (treeData) => {
     setTreeData(treeData);
+    console.log("708");
   };
 
   const expand = (expanded) => {
@@ -545,24 +796,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     toast.error(msg, {
       position: toast.POSITION.TOP_RIGHT,
     });
-  };
-
-  const handleRenderIcon = (rowInfo) => {
-    if (rowInfo) {
-      const moveHandle = document.getElementsByClassName("rst__moveHandle");
-      if (moveHandle[rowInfo.treeIndex]) {
-        moveHandle[
-          rowInfo.treeIndex
-        ].style.background = `#d9d9d9  url(${rowInfo.node.icon}) no-repeat center`;
-
-        moveHandle[rowInfo.treeIndex].style.backgroundSize = `32px 32px`;
-      }
-    }
-  };
-
-  const handleCatchRowInfoGenerate = (rowInfo) => {
-    handleRenderIcon(rowInfo);
-    // setRowInfoGenerate(rowInfo);
   };
 
   const handleOpenFormAddNodeChild = (id) => {
@@ -643,6 +876,9 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
         setSearchNode={setSearchNode}
         searchNodeFocus={searchNodeFocus}
         setSearchNodeFocus={setSearchNodeFocus}
+        setIsSearchNode={setIsSearchNode}
+        setCurrentSearch={setCurrentSearch}
+        currentSearch={currentSearch}
       />
       <div className="h-[100vh] relative mx-auto bg-red-100">
         {!isLoading ? (
@@ -650,6 +886,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             className="text-center mx-auto"
             // treeData={treeData}
             treeData={searchNode ? searchList : treeData}
+            // treeData={searchNodeFocus ? treeDataListFocus : treeData}
             onMoveNode={(treeData) => {
               setTreeDataUpdateAll(treeData.treeData);
               let treeUpdateArr = [...treeDataUpdate];
@@ -662,7 +899,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             }}
             onChange={(treeData) => {
               updateTreeData(treeData);
-              handleRenderIcon();
             }}
             searchQuery={searchString}
             searchFocusOffset={searchFocusIndex}
@@ -676,15 +912,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
-              handleCatchRowInfoGenerate(rowInfo);
-              if (rowInfo.node.expanded === true) {
-                handleCatchRowInfoGenerate(rowInfo);
-              } else {
-                handleCatchRowInfoGenerate(rowInfo);
-              }
-
-              handleRenderIcon();
-
               const data = listRowinfo.current;
               const obj = {
                 id: rowInfo.node.id,
@@ -695,7 +922,9 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
               return {
                 buttons: [
-                  <div className="text-sm">
+                  <div
+                    className={"text-sm nodeflag " + "nodeid" + rowInfo.node.id}
+                  >
                     {/* <button
                       id="addChildEl"
                       className="px-2 py-1 mx-2 ml-6 text-sky-400 border-2 border-sky-400 hover:text-white hover:bg-sky-500 hover:border-sky-500 rounded-full transition-primary"

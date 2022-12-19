@@ -23,6 +23,8 @@ const HeaderSidebarManagement = ({
   setSearchNode,
   searchNodeFocus,
   setSearchNodeFocus,
+  setCurrentSearch,
+  currentSearch,
 }) => {
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
@@ -149,65 +151,42 @@ const HeaderSidebarManagement = ({
     setSearchNodeFocus("");
   };
 
+  const handleSelectSearch = (value) => {
+    setCurrentSearch(value);
+  };
+
+  console.log("currentSearch", currentSearch);
+
   return (
     <div className="mt-32" style={{ flex: "0 0 auto", padding: "0 15px" }}>
       <h3 className="text-3xl hello font-medium text-center mb-5">
         Sidebar Management
       </h3>
-      {/* <form
-        style={{ display: "inline-block" }}
-        onSubmit={(event) => {
-          event.preventDefault();
-        }}
-      >
-        <label htmlFor="find-box">
-          <input
-            className="border rounded-md p-2"
-            id="find-box"
-            type="text"
-            placeholder="Search"
-            value={searchString}
-            onChange={(event) => setSearchString(event.target.value)}
-          />
-        </label>
-
-        <button
-          className="m-2 text-sky-400"
-          type="button"
-          disabled={!searchFoundCount}
-          onClick={selectPrevMatch}
-        >
-          <i className="fa-solid fa-backward"></i>
-        </button>
-
-        <button
-          className="m-2 text-sky-400"
-          type="submit"
-          disabled={!searchFoundCount}
-          onClick={selectNextMatch}
-        >
-          <i className="fa-solid fa-forward"></i>
-        </button>
-
-        <span>
-          &nbsp;
-          {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
-          &nbsp;/&nbsp;
-          {searchFoundCount || 0}
-        </span>
-      </form> */}
-
       <form
+        className="flex"
         onSubmit={(event) => {
           event.preventDefault();
         }}
       >
+        <label
+          htmlFor="countries"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        ></label>
+        <select
+          id="countries"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-full focus:ring-blue-500 focus:border-blue-500 block w-1/6 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          onChange={(e) => handleSelectSearch(e.target.value)}
+          defaultValue={currentSearch}
+        >
+          <option defaultValue="searchFocus">Search focus</option>
+          <option value="searchNode">Search node</option>
+        </select>
         <label className="relative block">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3">
             <i className="fa-solid fa-magnifying-glass"></i>
           </span>
           <input
-            className="w-1/2 xl:1/3 bg-white placeholder:font-italitc border border-slate-300 rounded-full py-2 pl-10 pr-4 focus:outline-none transition-primary"
+            className="w-full xl:1/3 bg-white placeholder:font-italitc border border-slate-300 rounded-r-full py-2 pl-10 pr-4 focus:outline-none transition-primary"
             placeholder="Enter your node to search focus"
             type="text"
             value={searchNodeFocus}
@@ -216,7 +195,7 @@ const HeaderSidebarManagement = ({
           />
           {isChangeSearchFocus ? (
             <button
-              className="absolute inset-y-0 flex items-center right-1/2 mr-5"
+              className="absolute inset-y-0 flex items-center -right-1 mr-5"
               onClick={(e) => handleClearSearchFocus(e)}
             >
               <i className="fa-solid fa-xmark"></i>
@@ -225,7 +204,7 @@ const HeaderSidebarManagement = ({
         </label>
       </form>
 
-      <form
+      {/* <form
         onSubmit={(event) => {
           event.preventDefault();
         }}
@@ -251,7 +230,7 @@ const HeaderSidebarManagement = ({
             </button>
           ) : null}
         </label>
-      </form>
+      </form> */}
 
       <div className="flex justify-start gap-4 text-white text-center my-5 transition-primary">
         <button
