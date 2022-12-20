@@ -6,7 +6,6 @@ import FormAddNode from "../sidebarForm/FormAddNode";
 const HeaderSidebarManagement = ({
   expandAll,
   collapseAll,
-  selectedSidebar,
   fetchSidebars,
   treeDataUpdateAll,
   treeDataAddNode,
@@ -64,19 +63,6 @@ const HeaderSidebarManagement = ({
     callbackRemoveNode();
   }, [treeDataRemoveNode]);
 
-  const showToastMessageSuccess = (msg = "Success") => {
-    toast.success(msg, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  const showToastMessageError = (msg = "Error") => {
-    toast.error(msg, {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  };
-
-  // Transfer Data
   const handleSaving = async () => {
     const mockApiSideBars = await sidebarAPI.getSidebars();
     const mockApiIds = mockApiSideBars.data.map((e) => e.id);
@@ -92,6 +78,20 @@ const HeaderSidebarManagement = ({
       .catch(() => showToastMessageError("Save error!"))
       .catch((error) => console.log("error", error));
   };
+
+  const showToastMessageSuccess = (msg = "Success") => {
+    toast.success(msg, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const showToastMessageError = (msg = "Error") => {
+    toast.error(msg, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  // Transfer Data
 
   const reloadPage = () => {
     window.location.reload();
@@ -130,8 +130,6 @@ const HeaderSidebarManagement = ({
   const handleSelectSearch = (value) => {
     setCurrentSearch(value);
   };
-
-  console.log("currentSearch", currentSearch);
 
   return (
     <div className="mt-32" style={{ flex: "0 0 auto", padding: "0 15px" }}>

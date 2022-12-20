@@ -9,8 +9,6 @@ const FormUpdateNode = ({
   showToastMessageSuccess,
   showToastMessageError,
 }) => {
-  const [checkedIconURL, setCheckedIconURL] = useState(false);
-  const [checkedIconLocal, setCheckedIconLocal] = useState(false);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
   const [formValue, setFormValue] = useState({
@@ -76,7 +74,6 @@ const FormUpdateNode = ({
     if (!isOpenFormUpdate) {
       setInputIconURL("");
       setInputIconLocal("");
-      console.log("!isOpenFormUpdate");
     }
   }, [isOpenFormUpdate]);
 

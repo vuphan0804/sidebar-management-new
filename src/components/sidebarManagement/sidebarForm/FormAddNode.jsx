@@ -19,9 +19,6 @@ const FormAddNode = ({
     isIconLocal: false,
     isIconURL: false,
   });
-
-  const [checkedIconURL, setCheckedIconURL] = useState(false);
-  const [checkedIconLocal, setCheckedIconLocal] = useState(false);
   const [inputIconURL, setInputIconURL] = useState("");
   const [inputIconLocal, setInputIconLocal] = useState("");
 
@@ -126,8 +123,6 @@ const FormAddNode = ({
       formValue.isIconURL = false;
       setInputIconLocal("");
       setInputIconURL("");
-      setCheckedIconLocal(false);
-      setCheckedIconURL(false);
     }
   }, [isOpenFormAddNode]);
 

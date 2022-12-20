@@ -12,9 +12,7 @@ import SidebarPopupInfo from "./modal/SidebarPopupInfo";
 import { toast } from "react-toastify";
 
 const Tree = ({ data, fetchSidebars, originalData }) => {
-  const [searchFocusIndex, setSearchFocusIndex] = useState(0),
-    [searchFoundCount, setSearchFoundCount] = useState(null),
-    [treeData, setTreeData] = useState([]),
+  const [treeData, setTreeData] = useState([]),
     [selectedSidebar, setSelectedSidebar] = useState(), // selected sidebar id to be updated
     [treeDataUpdate, setTreeDataUpdate] = useState([]),
     [treeDataUpdateAll, setTreeDataUpdateAll] = useState([]),
@@ -28,11 +26,9 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     [selectedNodeUpdateIcon, setSelectedNodeUpdateIcon] = useState([]),
     [popupInfo, setPopupInfo] = useState([]),
     [treeDataPrev, setTreeDataPrev] = useState([treeData]),
-    [searchInput, setSearchInput] = useState(""),
-    [searchString, setSearchString] = useState("");
+    [searchInput, setSearchInput] = useState("");
   const [searchList, setSearchList] = useState([]);
   const [searchListFocus, setSearchListFocus] = useState([]);
-  const [treeDataSearchFocus, setTreeDataSearchFocus] = useState([]);
   const [currentSearch, setCurrentSearch] = useState("searchNode");
 
   const [isOpenFormDelete, setIsOpenFormDelete] = useState(false),
@@ -43,7 +39,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     [isOpenFormAddNodeChild, setIsOpenFormAddNodeChild] = useState(false),
     [isChangeTree, setIsChangeTree] = useState(true);
   const listRowinfo = useRef();
-  const getNodeKey = ({ treeIndex }) => treeIndex;
 
   // useEffect(() => {
   //   setTreeData(data);
@@ -141,7 +136,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
       let childHaveChild = [];
       let childOnly = [];
       parent.name = parent.name ? parent.name : parent.title;
-
       parent.title = (
         <div className="flex items-center justify-between">
           <div className="whitespace-nowrap">{parent.name}</div>
@@ -602,7 +596,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
 
   const updateTreeData = (treeData) => {
     setTreeData(treeData);
-    console.log("708");
   };
 
   const expand = (expanded) => {
@@ -683,8 +676,6 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
     setIsOpenFormIcon(false);
   };
 
-  console.log("searchInput", searchInput);
-
   useEffect(() => {
     if (searchInput) {
       if (currentSearch === "searchFocus") {
@@ -698,17 +689,13 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
           (obj) => parseInt(obj.count),
           10
         ).filter((a) => a.parentId !== "");
-        console.log("715 focus");
         setSearchList(parseDataFocus(parentArr, childArr));
       }
       if (currentSearch === "searchNode") {
-        console.log("718 node");
         setSearchList(searchTree([...(treeDataClone ?? [])], searchInput, []));
       }
     }
   }, [searchInput, currentSearch]);
-
-  console.log("treeDataSearchFocus", treeDataSearchFocus);
 
   return (
     <div className="">
@@ -751,15 +738,7 @@ const Tree = ({ data, fetchSidebars, originalData }) => {
             onChange={(treeData) => {
               updateTreeData(treeData);
             }}
-            searchQuery={searchString}
-            searchFocusOffset={searchFocusIndex}
             isVirtualized={true}
-            searchFinishCallback={(matches) => {
-              setSearchFoundCount(matches.length);
-              setSearchFocusIndex(
-                matches.length > 0 ? searchFocusIndex % matches.length : 0
-              );
-            }}
             canDrag={({ node }) => !node.dragDisabled}
             onDragStateChanged={(node) => {}}
             generateNodeProps={(rowInfo) => {
