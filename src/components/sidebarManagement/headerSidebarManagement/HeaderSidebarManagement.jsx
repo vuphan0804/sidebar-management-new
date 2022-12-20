@@ -6,12 +6,6 @@ import FormAddNode from "../sidebarForm/FormAddNode";
 const HeaderSidebarManagement = ({
   expandAll,
   collapseAll,
-  searchString,
-  setSearchString,
-  searchFoundCount,
-  selectNextMatch,
-  selectPrevMatch,
-  searchFocusIndex,
   selectedSidebar,
   fetchSidebars,
   treeDataUpdateAll,
@@ -19,17 +13,14 @@ const HeaderSidebarManagement = ({
   treeDataRemoveNode,
   isChangeTree,
   deParseData,
-  searchNode,
-  setSearchNode,
-  searchNodeFocus,
-  setSearchNodeFocus,
+  searchInput,
+  setSearchInput,
   setCurrentSearch,
   currentSearch,
 }) => {
   const [originalDataAll, setOriginalDataAll] = useState([]);
   const [isOpenFormAddNode, setIsOpenFormAddNode] = useState(false);
   const [isChangeSearch, setIsChangeSearch] = useState(false);
-  const [isChangeSearchFocus, setIsChangeSearchFocus] = useState(false);
 
   const callbackRemoveNode = useCallback(async () => {
     if (treeDataRemoveNode.length !== 0) {
@@ -116,13 +107,13 @@ const HeaderSidebarManagement = ({
 
   // const handleSearchNode = (e) => {
   //   if (e.key === "Enter") {
-  //     setSearchNode(e.target.value);
+  //     setSearchInput(e.target.value);
   //     setIsChangeSearch(true);
   //   }
   // };
 
   const handleChangeInputSearch = (e) => {
-    setSearchNode(e.target.value);
+    setSearchInput(e.target.value);
     if (e.target.value !== "") {
       setIsChangeSearch(true);
     } else {
@@ -131,24 +122,9 @@ const HeaderSidebarManagement = ({
     expandAll();
   };
 
-  const handleChangeInputSearchFocus = (e) => {
-    setSearchNodeFocus(e.target.value);
-    if (e.target.value !== "") {
-      setIsChangeSearchFocus(true);
-    } else {
-      setIsChangeSearchFocus(false);
-    }
-    expandAll();
-  };
-
-  const handleClearSearchNode = () => {
+  const handleClearSearch = () => {
     setIsChangeSearch(false);
-    setSearchNode("");
-  };
-
-  const handleClearSearchFocus = () => {
-    setIsChangeSearchFocus(false);
-    setSearchNodeFocus("");
+    setSearchInput("");
   };
 
   const handleSelectSearch = (value) => {
@@ -169,17 +145,17 @@ const HeaderSidebarManagement = ({
         }}
       >
         <label
-          htmlFor="countries"
+          htmlFor="searchSelect"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         ></label>
         <select
-          id="countries"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-full focus:ring-blue-500 focus:border-blue-500 block w-1/6 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          id="searchSelect"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-md font-normal rounded-l-full focus:ring-blue-500 focus:border-blue-500 block 1/2 lg:w-1/6 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           onChange={(e) => handleSelectSearch(e.target.value)}
           defaultValue={currentSearch}
         >
-          <option defaultValue="searchFocus">Search focus</option>
           <option value="searchNode">Search node</option>
+          <option value="searchFocus">Search focus</option>
         </select>
         <label className="relative block">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -189,48 +165,20 @@ const HeaderSidebarManagement = ({
             className="w-full xl:1/3 bg-white placeholder:font-italitc border border-slate-300 rounded-r-full py-2 pl-10 pr-4 focus:outline-none transition-primary"
             placeholder="Enter your node to search focus"
             type="text"
-            value={searchNodeFocus}
+            value={searchInput}
             // onKeyDown={(e) => handleSearchNode(e)}
-            onChange={(e) => handleChangeInputSearchFocus(e)}
+            onChange={(e) => handleChangeInputSearch(e)}
           />
-          {isChangeSearchFocus ? (
+          {isChangeSearch ? (
             <button
               className="absolute inset-y-0 flex items-center -right-1 mr-5"
-              onClick={(e) => handleClearSearchFocus(e)}
+              onClick={(e) => handleClearSearch(e)}
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
           ) : null}
         </label>
       </form>
-
-      {/* <form
-        onSubmit={(event) => {
-          event.preventDefault();
-        }}
-      >
-        <label className="relative block">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-            <i className="fa-solid fa-magnifying-glass"></i>
-          </span>
-          <input
-            className="w-1/2 xl:1/3 bg-white placeholder:font-italitc border border-slate-300 rounded-full py-2 pl-10 pr-4 focus:outline-none transition-primary"
-            placeholder="Enter your node to search"
-            type="text"
-            value={searchNode}
-            // onKeyDown={(e) => handleSearchNode(e)}
-            onChange={(e) => handleChangeInputSearch(e)}
-          />
-          {isChangeSearch ? (
-            <button
-              className="absolute inset-y-0 flex items-center right-1/2 mr-5"
-              onClick={(e) => handleClearSearchNode(e)}
-            >
-              <i className="fa-solid fa-xmark"></i>
-            </button>
-          ) : null}
-        </label>
-      </form> */}
 
       <div className="flex justify-start gap-4 text-white text-center my-5 transition-primary">
         <button

@@ -17,8 +17,8 @@ const SidebarForm = ({ isOpenPopupInfo, handleClosePopupInfo, popupInfo }) => {
     <div>
       {isOpenPopupInfo ? (
         <>
-          <div className="modal fade fixed bg-black bg-opacity-10 pt-80 pl-[480px] w-full h-full outline-none overflow-x-hidden overflow-y-auto inset-0 transition-primary">
-            <div className="relative w-full max-w-md h-full md:h-auto">
+          <div className="modal fade fixed bg-black bg-opacity-10 w-full h-full outline-none overflow-x-hidden overflow-y-auto inset-0 transition-primary">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-full max-w-md h-auto w-2/3">
               <div className="relative bg-gray-100 rounded-lg shadow dark:bg-gray-700">
                 <button
                   type="button"

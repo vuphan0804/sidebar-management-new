@@ -145,9 +145,9 @@ const FormAddNodeChild = ({
         <div
           id="authentication-modal"
           aria-hidden="true"
-          className="overflow-y-auto overflow-x-hidden fixed bg-black bg-opacity-10 pl-96 pt-52 top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full"
+          className="overflow-y-auto overflow-x-hidden inset-0 fixed bg-black bg-opacity-10 top-0 right-0 left-0 z-50 p-4 w-full h-modal"
         >
-          <div className="relative w-full max-w-md h-full md:h-auto">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-full max-w-md h-auto w-2/3">
             <div className="relative bg-gray-100 rounded-lg shadow dark:bg-gray-700">
               <button
                 type="button"
@@ -215,7 +215,7 @@ const FormAddNodeChild = ({
                       />
                       Icon
                     </label>
-                    <div className="overflow-y-scroll h-32 grid grid-cols-3">
+                    <div className="overflow-y-scroll h-32 grid grid-cols-2 sm:grid-cols-3">
                       {icons.map((iconz, index) => {
                         return (
                           <button
